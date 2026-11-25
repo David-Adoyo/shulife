@@ -8,8 +8,8 @@
   "scripts": {
     "dev": "npm run dev -w @shulife/web",
     "build": "npm run build -w @shulife/web",
-    "test": "npm test -w @shulife/core",
-    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm test -w @shulife/core -w @shulife/demo -w @shulife/integrations",
+    "typecheck": "npm run typecheck -w @shulife/core -w @shulife/demo -w @shulife/integrations",
     "test:db": "npm test -w @shulife/db"
   }
 }

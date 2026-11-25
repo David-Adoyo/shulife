@@ -4,18 +4,22 @@
 
 The full product brief is in [`docs/MASTERPLAN.md`](docs/MASTERPLAN.md).
 
-## Marketing website (`apps/web`)
+## What's here
 
-Next.js (App Router, static export) + Tailwind CSS v4, Fraunces and Plus Jakarta Sans.
+| Path | What it is |
+|---|---|
+| `apps/web` | Next.js: marketing site, school app (`/app`), parent portal (`/p/…`), receipt check (`/r/…`), admin (`/admin`), webhooks (`/api/…`) |
+| `packages/core` | Pure TypeScript domain logic: money, billing, matching, sibling allocation, reminders, clearance, projection, messaging (EN/SW), WhatsApp commands, import, ingestion, subscriptions |
+| `packages/db` | Postgres migrations with Row Level Security on every table, integrity triggers and RLS tests |
+| `packages/demo` | Mlima Academy, a fictional demo school run through the real engines, plus read models for the app |
+| `packages/integrations` | Daraja, Africa's Talking, WhatsApp Cloud API, Paystack and Resend adapters |
+| `docs/` | Masterplan, runbook, data protection notes, launch checklist |
 
 ```bash
-cd apps/web
 npm install
-npm run dev      # http://localhost:3000
-npm run build    # static site in apps/web/out
+npm run dev        # http://localhost:3000 — try /login → "Explore the demo school"
+npm test           # 84 unit tests
+npm run test:db    # 51 database tests (needs PostgreSQL)
 ```
 
-- Brand assets: `apps/web/public/brand/` (wordmark and mark, navy and cream) and the favicon set in `apps/web/public/`.
-- Photography: AI-generated in Figma (file "Shulife — Website Imagery"), optimised to WebP in `apps/web/public/images/`.
-- Pages: `/`, `/how-it-works`, `/features`, `/for-directors`, `/for-bursars`, `/for-parents` (EN/SW), `/pricing`, `/security`, `/about`, `/book-demo`, `/resources`, `/help`, `/legal/*`, `/login`.
-- Unconfirmed values (contacts, pricing, ODPC number) live in `apps/web/src/lib/site.ts` as `null` and stay hidden until set.
+See `docs/RUNBOOK.md` for going live and `docs/LAUNCH-CHECKLIST.md` for what remains.

@@ -13,3 +13,13 @@
 - **Kiswahili** on /for-parents is a first draft and must be reviewed by a native speaker before launch (`swReviewDone` in `src/lib/site.ts`).
 - **Resources** guides contain practical advice only — no statistics or customer claims.
 - **Sitemap.xml** is deferred until the production domain (`{{DOMAIN}}`) is confirmed.
+
+## 2026-11-25 · Product build (stages 0–11)
+- **Monorepo with npm workspaces** instead of a separate tool: fewer dependencies (§0.1 rule 1).
+- **Demo data source first.** Without a Supabase project or Daraja keys, the app runs on an in-memory demo school processed by the real engines. The Postgres schema and RLS are written and tested separately; wiring the app to Supabase is the next step (docs/LAUNCH-CHECKLIST.md).
+- **Demo role switcher** stands in for Supabase Auth so each role's view can be reviewed; permission rules mirror the RLS policies.
+- **Matching combination rule:** the strongest signal plus 30% of the others, capped at 100; auto-apply at ≥ 90 with a 15-point margin; typos and learners who have left are never auto-applied.
+- **Oldest-balance rule:** each term tier is settled oldest first, shared across children in proportion to what each owes in that tier; whole shillings where possible.
+- **Overpayment** becomes family credit (learner credit under the exact-number rule) and is applied automatically when the next term is invoiced.
+- **Ratiba** is behind an adapter that refuses to run until Safaricom's API is confirmed.
+- **Not built yet:** PDF generation, Supabase wiring, the Expo mobile app (Stage 12), load tests.
