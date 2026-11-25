@@ -122,9 +122,14 @@ export default async function ParentPortal({ params, searchParams }: { params: P
       )}
 
       <section id="statement" className="mx-5 mt-6 rounded-2xl bg-white p-5 shadow-soft">
-        <h2 className="font-semibold text-navy-900">
-          {t.statement} · {v.children[0].name}
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="font-semibold text-navy-900">
+            {t.statement} · {v.children[0].name}
+          </h2>
+          <a href={`/api/pdf/statement/${token}/`} className="text-xs font-semibold text-navy-900 underline decoration-gold-500 underline-offset-4">
+            PDF
+          </a>
+        </div>
         {v.children[0].statement.sections.slice(-1).map((sec) => (
           <table key={sec.termKey} className="mt-3 w-full text-sm tabular">
             <tbody className="divide-y divide-cream-200">
@@ -162,9 +167,14 @@ export default async function ParentPortal({ params, searchParams }: { params: P
                     {r.number} · {formatDate(new Date(r.at))}
                   </span>
                 </span>
-                <a href={`/r/${r.verifyCode}/`} className="text-xs font-semibold text-navy-900 underline decoration-gold-500 underline-offset-4">
-                  {t.verify}
-                </a>
+                <span className="flex gap-3">
+                  <a href={`/api/pdf/receipt/${r.verifyCode}/`} className="text-xs font-semibold text-navy-900 underline decoration-gold-500 underline-offset-4">
+                    PDF
+                  </a>
+                  <a href={`/r/${r.verifyCode}/`} className="text-xs font-semibold text-navy-900 underline decoration-gold-500 underline-offset-4">
+                    {t.verify}
+                  </a>
+                </span>
               </li>
             ))}
           </ul>

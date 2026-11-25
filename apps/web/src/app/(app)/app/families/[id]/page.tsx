@@ -83,7 +83,7 @@ export default async function FamilyPage({ params, searchParams }: { params: Pro
             </ul>
             <div className="mt-4 flex flex-wrap gap-2 border-t border-cream-200 pt-4">
               <a href={parentLink} className="rounded-full bg-navy-900 px-4 py-2 text-sm font-semibold text-cream-50">Request payment</a>
-              <a href={`${parentLink}#statement`} className="rounded-full px-4 py-2 text-sm font-semibold text-navy-900 ring-1 ring-cream-200">Statement</a>
+              <a href={`/api/pdf/family/${d.family.id}/`} className="rounded-full px-4 py-2 text-sm font-semibold text-navy-900 ring-1 ring-cream-200">Statement</a>
               <a href="/app/notices/" className="rounded-full px-4 py-2 text-sm font-semibold text-navy-900 ring-1 ring-cream-200">Message</a>
             </div>
           </Card>
@@ -231,7 +231,15 @@ export default async function FamilyPage({ params, searchParams }: { params: Pro
                         <KSh cents={p.amount} /> · {p.channel === "c2b" ? "M-Pesa" : p.channel === "bank_import" ? "Bank" : p.channel.replace("_", " ")}
                       </p>
                       <p className="text-xs text-ink-600">
-                        {formatDate(new Date(p.paidAt))} {formatTime(new Date(p.paidAt))} · {p.receiptNo ?? "no receipt"} · ref “{p.billRef ?? "—"}”
+                        {formatDate(new Date(p.paidAt))} {formatTime(new Date(p.paidAt))} ·{" "}
+                        {p.receiptNo && p.verifyCode ? (
+                          <a href={`/api/pdf/receipt/${p.verifyCode}/`} className="underline decoration-gold-500 underline-offset-2">
+                            {p.receiptNo}
+                          </a>
+                        ) : (
+                          "no receipt"
+                        )}{" "}
+                        · ref “{p.billRef ?? "—"}”
                       </p>
                     </div>
                     {p.matchStatus === "reversed" ? <Pill kind="not_cleared" label="Reversed" /> : <MatchBadge kind={p.matchKind} />}

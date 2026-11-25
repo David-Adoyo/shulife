@@ -56,7 +56,7 @@ export default async function Clearance({ searchParams }: { searchParams: Promis
               </li>
             ))}
           </ul>
-          <a href="#" className="mt-4 inline-block rounded-full bg-navy-900 px-4 py-2 text-sm font-semibold text-cream-50">
+          <a href={`/api/pdf/clearance/${current.id}/`} className="mt-4 inline-block rounded-full bg-navy-900 px-4 py-2 text-sm font-semibold text-cream-50">
             Download class list (PDF)
           </a>
         </Card>
@@ -78,6 +78,11 @@ export default async function Clearance({ searchParams }: { searchParams: Promis
             </Card>
           ))}
         </div>
+      )}
+      {!teacher && (
+        <a href={`/api/pdf/clearance/${current.id}/`} className="mt-5 inline-block rounded-full bg-navy-900 px-4 py-2 text-sm font-semibold text-cream-50">
+          Download teacher list (PDF)
+        </a>
       )}
       {can.approveWaiver(session.role) && <p className="mt-4 text-sm text-ink-600">Heads and bursars can override a learner’s status with a reason; every override is recorded.</p>}
     </>
