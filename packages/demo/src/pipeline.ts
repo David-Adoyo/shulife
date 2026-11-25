@@ -137,3 +137,20 @@ export function resolveReview(s: School, paymentId: string, action: { familyId: 
 export function reviewQueue(s: School) {
   return s.payments.filter((p) => p.matchStatus === "suggested" || p.matchStatus === "unmatched").sort((a, b) => b.paidAt.localeCompare(a.paidAt));
 }
+
+/** Family credit is applied automatically to new charges (§7.4), with its own ledger line. */
+export function applyCredit(s: School, familyId: string, at: string, termKey: string) {
+  const fam = s.families.find((f) => f.id === familyId)!;
+  if (fam.credit <= 0) return 0;
+  const owed = childBalances(s, familyId).reduce((a, c) => a + c.lines.reduce((x, l) => x + l.outstanding, 0), 0);
+  const use = Math.min(fam.credit, owed);
+  if (use <= 0) return 0;
+  const alloc = allocatePayment({ amount: use, rule: s.org.allocationRule, children: childBalances(s, familyId) });
+  for (const line of alloc.lines) {
+    const open = s.lines.get(line.lineId)!;
+    open.outstanding -= line.amount;
+    s.ledger.push({ id: `credit:${familyId}:${termKey}:${line.lineId}`, learnerId: line.learnerId, termKey, at, kind: "credit_applied", description: `Credit applied — ${open.feeItemName}`, amount: -line.amount });
+  }
+  fam.credit -= use;
+  return use;
+}

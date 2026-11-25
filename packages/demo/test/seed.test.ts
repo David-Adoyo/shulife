@@ -34,7 +34,12 @@ describe("demo seed (§16)", () => {
     const invoiced = sum(s.invoices.map((i) => i.total));
     const ledger = sum(s.ledger.map((e) => e.amount));
     const allocated = sum(s.payments.filter((p) => p.familyId && p.matchStatus !== "reversed").map((p) => p.amount - p.credit));
-    expect(ledger).toBe(invoiced - allocated);
+    const creditApplied = -sum(s.ledger.filter((e) => e.kind === "credit_applied").map((e) => e.amount));
+    const creditHeld = sum(s.families.map((f) => f.credit));
+    const overpaid = sum(s.payments.filter((p) => p.familyId && p.matchStatus !== "reversed").map((p) => p.credit));
+    expect(creditApplied).toBeGreaterThan(0);
+    expect(ledger).toBe(invoiced - allocated - creditApplied);
+    expect(creditHeld + creditApplied).toBe(overpaid); // every shilling of overpayment is either held or used
     const open = sum([...s.lines.values()].map((l) => l.outstanding));
     expect(open).toBe(ledger);
     for (const p of s.payments.filter((x) => x.familyId)) expect(sum(p.split.map((x) => x.amount)) + p.credit).toBe(p.amount);

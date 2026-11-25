@@ -1,5 +1,5 @@
 import { buildInvoice, hashMsisdn, invoiceNumber, kes, nairobiDate, priorityFor, roundTo, upliftStructure, type DiscountRule, type FeeItem, type FeeStructure, type Sponsorship } from "@shulife/core";
-import { familyBalance, ingest, resolveReview } from "./pipeline";
+import { applyCredit, familyBalance, ingest, resolveReview } from "./pipeline";
 import type { Family, Guardian, Learner, OpenLine, Payment, School, Stream, Term } from "./types";
 
 /**
@@ -214,6 +214,7 @@ export function createSchool(seed = 2027): School {
           school.lines.set(open.lineId, open);
         }
       });
+      applyCredit(school, fam.id, new Date(nairobiDate(term.opening, 9).getTime() - 14 * 86_400_000).toISOString(), term.key);
     }
   };
 
