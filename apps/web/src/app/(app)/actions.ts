@@ -47,7 +47,7 @@ export async function recordManualReceipt(formData: FormData) {
   if (!bookRef || amount <= 0) throw new Error("Enter an amount and the receipt-book number");
   const fam = s.families.find((f) => f.id === familyId)!;
   const term = s.terms.find((t) => t.status === "open")!;
-  const p: Payment = { id: crypto.randomUUID(), providerRef: `${channel.toUpperCase()}-${crypto.randomUUID().slice(0, 13)}`, campusId: fam.campusId, amount, billRef: null, phoneLast3: null, phoneHash: null, payerName: null, paidAt: new Date().toISOString(), channel, matchStatus: "unmatched", matchKind: "—", confidence: null, familyId: null, learnerId: null, rule: null, split: [], credit: 0, receiptNo: null, verifyCode: null, termId: term.id, suggestions: [], bookRef, receivedBy: session.name, banked: false };
+  const p: Payment = { id: crypto.randomUUID(), providerRef: `${channel.toUpperCase()}-${crypto.randomUUID().slice(0, 13)}`, campusId: fam.campusId, amount, billRef: null, phoneLast3: null, phoneHash: null, payerName: null, paidAt: process.env.SHULIFE_TODAY === "now" ? new Date().toISOString() : s.today, channel, matchStatus: "unmatched", matchKind: "—", confidence: null, familyId: null, learnerId: null, rule: null, split: [], credit: 0, receiptNo: null, verifyCode: null, termId: term.id, suggestions: [], bookRef, receivedBy: session.name, banked: false };
   await serial(async () => {
     const n = s.ledger.length;
     ingest(s, p, { manualFamilyId: familyId });

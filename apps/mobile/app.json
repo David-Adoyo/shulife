@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "Shulife",
+    "slug": "shulife",
+    "scheme": "shulife",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "icon": "./assets/icon.png",
+    "android": {
+      "package": "ke.shulife.app",
+      "adaptiveIcon": { "foregroundImage": "./assets/icon.png", "backgroundColor": "#DDE4F4" },
+      "permissions": ["CAMERA"]
+    },
+    "plugins": ["expo-router", "expo-secure-store", ["expo-image-picker", { "cameraPermission": "Shulife uses the camera to photograph cash slips and cheques for receipts." }]],
+    "experiments": { "typedRoutes": false }
+  }
+}

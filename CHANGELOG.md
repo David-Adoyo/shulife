@@ -1,6 +1,11 @@
 # Changelog
 
 ## Unreleased
+- PDF receipts (A5, QR verification), family fee statements and teacher clearance lists.
+- Postgres persistence: load the school at startup, write every payment, review decision and manual receipt through; load test passes (2,000 callbacks, 0 lost, 0 duplicates, p95 308 ms).
+- Reminder job (`/api/jobs/reminders`, every 15 minutes) with SMS/WhatsApp senders and dry-run mode.
+- Supabase Auth sign-in with TOTP for director, head and bursar (enabled by environment keys).
+- Mobile API and the Expo app for directors and bursars.
 - **Core engines** (`packages/core`): integer-cent money, Kenyan phones, Nairobi time, tolerant reference parser, matching engine with reasons and learning, sibling allocation (all four rules), fee billing with ordered discounts, sponsorships and pro-rata, append-only ledger and statements, receipts and cash-up, reminder engine (quiet hours, Sundays, holidays, weekly cap, stop-on-paid, plan-aware), clearance, cash projection, term close, EN/SW message catalogue, WhatsApp commands, audiences, CSV import with family grouping, C2B/STK/bank ingestion, subscription lifecycle.
 - **Database** (`packages/db`): full data model, RLS on every table, append-only and immutability triggers, audit log; 51 tests.
 - **Demo school** (`packages/demo`): Mlima Academy with two terms of realistic payments; reconciles to the cent; ≥ 90% auto-match acceptance test.

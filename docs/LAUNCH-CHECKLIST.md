@@ -17,4 +17,7 @@
 | Legal texts, ODPC registration, Kiswahili review (`{{SW_REVIEW_DONE}}`) | ⬜ |
 | Licensed photography replacing AI images (`{{PHOTO_SOURCE}}`) | ⬜ |
 | Real prices, contacts and domain in `apps/web/src/lib/site.ts` | ⬜ |
-| Mobile app (Expo, Stage 12) | ⬜ not started |
+| Mobile app (Expo): dashboard, review queue, offline cash receipts with camera | ✅ type-checks and bundles for Android; not yet run on a device |
+| Mobile: Supabase sign-in in the app, push notifications, signed APK (`eas build`) | ⬜ |
+| Reminder job every 15 minutes, idempotent, dry run without keys | ✅ |
+| Supabase Auth with TOTP for director/head/bursar | ✅ written; ⬜ untested until a Supabase project exists |
