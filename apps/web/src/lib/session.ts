@@ -2,6 +2,9 @@ import "server-only";
 import { cookies } from "next/headers";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { getSchool } from "@shulife/demo";
+import { redirect } from "next/navigation";
+import { supabaseConfigured, supabaseServer } from "./supabase";
+import { getPool } from "./db";
 
 /** The demo class teacher teaches Grade 4 East at Ruiru (looked up, so it works with database ids too). */
 function teacherStreams() {
@@ -27,7 +30,42 @@ export const ROLES: { id: Role; label: string; who: string }[] = [
 
 export type Session = { role: Role; name: string; campusId: string | null; streamIds: string[] };
 
+const MFA_ROLES: Role[] = ["director", "head", "bursar"];
+
+/**
+ * With Supabase configured: the signed-in user's membership decides role and scope,
+ * and director, head and bursar roles must have passed TOTP (AAL2) (§13).
+ */
+async function supabaseSession(): Promise<Session> {
+  const sb = await supabaseServer();
+  const { data } = await sb.auth.getUser();
+  if (!data.user) redirect("/login/");
+  const pool = getPool();
+  if (!pool) throw new Error("DATABASE_URL is required with Supabase Auth");
+  const { rows } = await pool.query(
+    `select role, campus_ids, stream_ids from memberships where user_id = $1 and archived_at is null and role <> 'sponsor'
+     order by array_position(array['director','head','bursar','front_office','class_teacher','transport']::app.role[], role) limit 1`,
+    [data.user.id],
+  );
+  if (!rows[0]) redirect("/login/?error=no-access");
+  const role = rows[0].role as Role;
+  if (MFA_ROLES.includes(role)) {
+    const { data: aal } = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (aal?.currentLevel !== "aal2") redirect("/login/mfa/");
+  }
+  const c = await cookies();
+  const campus = c.get("demo_campus")?.value;
+  const allowed: string[] | null = rows[0].campus_ids;
+  return {
+    role,
+    name: (data.user.user_metadata?.full_name as string) ?? data.user.email ?? "Staff",
+    campusId: allowed?.length === 1 ? allowed[0] : campus && campus !== "all" && (!allowed || allowed.includes(campus)) ? campus : null,
+    streamIds: rows[0].stream_ids ?? [],
+  };
+}
+
 export async function getSession(): Promise<Session> {
+  if (supabaseConfigured()) return supabaseSession();
   const c = await cookies();
   const role = (ROLES.find((r) => r.id === c.get("demo_role")?.value)?.id ?? "director") as Role;
   const campus = c.get("demo_campus")?.value;

@@ -5,6 +5,8 @@ import { Icon } from "@/components/icons";
 import { can, getSession, ROLES } from "@/lib/session";
 import { setCampus, setRole } from "../actions";
 import { NavLink } from "@/components/app/nav-link";
+import { supabaseConfigured } from "@/lib/supabase";
+import { signOut } from "@/app/login/actions";
 
 export const metadata: Metadata = { title: { default: "School app", template: "%s · Shulife" }, robots: { index: false } };
 export const dynamic = "force-dynamic";
@@ -81,6 +83,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               <input name="q" placeholder="Learner, admission number or guardian phone" className="h-10 w-full rounded-full border border-cream-200 bg-white pl-9 pr-4 text-sm focus:border-navy-900 focus:outline-none" />
             </form>
           )}
+          {supabaseConfigured() ? (
+            <form action={signOut} className="ml-auto flex items-center gap-3">
+              <span className="hidden text-sm text-ink-600 sm:block">{session.name}</span>
+              <button className="h-10 rounded-full px-4 text-sm font-semibold text-navy-900 ring-1 ring-cream-200">Sign out</button>
+            </form>
+          ) : (
           <form action={setRole} className="ml-auto flex items-center gap-2">
             <label htmlFor="role" className="hidden text-xs text-ink-600 sm:block">
               Viewing as
@@ -94,9 +102,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             </select>
             <button className="h-10 rounded-full bg-navy-900 px-4 text-sm font-semibold text-cream-50">Switch</button>
           </form>
+          )}
         </header>
         <div className="border-b border-gold-400/40 bg-gold-200/40 px-4 py-2 text-center text-xs text-navy-900 sm:px-6">
-          Demo school with fictional data · Signed in as <b>{session.name}</b> ({ROLES.find((r) => r.id === session.role)!.label})
+          {supabaseConfigured() ? "Signed in as" : "Demo school with fictional data · Signed in as"} <b>{session.name}</b> ({ROLES.find((r) => r.id === session.role)!.label})
         </div>
         <main id="main" className="px-4 pb-28 pt-6 sm:px-6 lg:px-10 lg:pb-12">
           {children}

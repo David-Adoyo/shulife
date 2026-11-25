@@ -23,3 +23,4 @@ export function resetSchool() {
   g.__shulifeDemo = createSchool();
   return g.__shulifeDemo;
 }
+export * from "./jobs";
