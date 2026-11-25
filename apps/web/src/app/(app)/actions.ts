@@ -6,6 +6,8 @@ import { redirect } from "next/navigation";
 import { kes, resolveAudience, checkTone } from "@shulife/core";
 import { getSchool, ingest, resetSchool, resolveReview, type Payment } from "@shulife/demo";
 import { can, getSession, ROLES, type Role } from "@/lib/session";
+import { serial, withDb } from "@/lib/db";
+import { persistIngest, persistResolution } from "@shulife/db";
 
 export async function setRole(formData: FormData) {
   const role = String(formData.get("role")) as Role;
@@ -24,7 +26,13 @@ export async function resolveCard(formData: FormData) {
   if (!can.review(session.role)) throw new Error("Not allowed");
   const id = String(formData.get("paymentId"));
   const family = formData.get("familyId");
-  resolveReview(getSchool(), id, family ? { familyId: String(family) } : { notOurs: true });
+  await serial(async () => {
+    const s = getSchool();
+    const n = s.ledger.length;
+    const p = resolveReview(s, id, family ? { familyId: String(family) } : { notOurs: true });
+    const entries = s.ledger.slice(n);
+    await withDb((c) => persistResolution(c, s, p, entries));
+  });
   revalidatePath("/app", "layout");
 }
 
@@ -39,8 +47,13 @@ export async function recordManualReceipt(formData: FormData) {
   if (!bookRef || amount <= 0) throw new Error("Enter an amount and the receipt-book number");
   const fam = s.families.find((f) => f.id === familyId)!;
   const term = s.terms.find((t) => t.status === "open")!;
-  const p: Payment = { id: `m${Date.now()}`, providerRef: `${channel.toUpperCase()}-${Date.now()}`, campusId: fam.campusId, amount, billRef: null, phoneLast3: null, phoneHash: null, payerName: null, paidAt: new Date().toISOString(), channel, matchStatus: "unmatched", matchKind: "—", confidence: null, familyId: null, learnerId: null, rule: null, split: [], credit: 0, receiptNo: null, verifyCode: null, termId: term.id, suggestions: [], bookRef, receivedBy: session.name, banked: false };
-  ingest(s, p, { manualFamilyId: familyId });
+  const p: Payment = { id: crypto.randomUUID(), providerRef: `${channel.toUpperCase()}-${crypto.randomUUID().slice(0, 13)}`, campusId: fam.campusId, amount, billRef: null, phoneLast3: null, phoneHash: null, payerName: null, paidAt: new Date().toISOString(), channel, matchStatus: "unmatched", matchKind: "—", confidence: null, familyId: null, learnerId: null, rule: null, split: [], credit: 0, receiptNo: null, verifyCode: null, termId: term.id, suggestions: [], bookRef, receivedBy: session.name, banked: false };
+  await serial(async () => {
+    const n = s.ledger.length;
+    ingest(s, p, { manualFamilyId: familyId });
+    const entries = s.ledger.slice(n);
+    await withDb((c) => persistIngest(c, s, p, entries));
+  });
   revalidatePath("/app", "layout");
   redirect(`/app/families/${familyId}/?receipt=${p.receiptNo}`);
 }

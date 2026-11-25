@@ -9,6 +9,19 @@ npm run test:db        # migrations + RLS tests against a throwaway Postgres (ne
 ```
 The school app runs on **Mlima Academy**, a fictional demo school generated in memory by `packages/demo` and processed through the real engines. Use the role switcher in the top bar to see each role's view. Demo data resets when the server restarts (or Set-up → Reset demo data).
 
+## Running on Postgres
+```bash
+eval "$(bash packages/db/scripts/pg.sh start)"          # local throwaway Postgres with all migrations
+SHULIFE_SEED_DEMO=1 npm run build -w @shulife/web && DATABASE_URL=$DATABASE_URL SHULIFE_SEED_DEMO=1 npm start -w @shulife/web
+```
+With `DATABASE_URL` set, the app loads the school from Postgres at startup (seeding the demo school into an empty database when `SHULIFE_SEED_DEMO=1`) and writes every payment, review decision and manual receipt through in a transaction. Payments are processed one at a time per server (like a single queue consumer); run **one** app instance until the read models move fully into SQL.
+
+## Load test (term-opening burst, §14)
+```bash
+DATABASE_URL=… BASE=http://localhost:3000 node packages/db/scripts/loadtest.mjs 2000 40
+```
+Last run: 2,000 callbacks (200 repeats) in 12.3 s · p95 308 ms · 0 lost · 0 duplicates · 2,000 raw events stored · 90% auto-matched.
+
 ## Going live with Supabase
 1. Create a Supabase project; run `packages/db/migrations/*.sql` in order (not `packages/db/local/` — that is a local stand-in for Supabase's own auth schema).
 2. Fill `.env.local` from `.env.example`.

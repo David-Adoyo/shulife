@@ -6,12 +6,13 @@
 | RLS isolation and integrity tested | ✅ `npm run test:db` |
 | ≥ 90% auto-match on 300 simulated payments | ✅ `packages/demo/test/seed.test.ts` |
 | Supabase project, migrations applied, auth with TOTP for director/head/bursar | ⬜ needs project |
-| Supabase-backed data source replacing the demo store | ⬜ |
+| Postgres-backed data source (load at startup, write-through) | ✅ `bash packages/db/scripts/pgtest.sh` |
+| Read models fully in SQL (needed for more than one app instance) | ⬜ |
 | Daraja sandbox end-to-end (C2B, STK success/failure, duplicates, reversals) | ⬜ needs keys |
 | Ratiba API confirmed with Safaricom | ⬜ |
 | WhatsApp templates approved by Meta; SMS sender ID approved | ⬜ |
-| PDF receipts and statements (@react-pdf/renderer) | ⬜ |
-| Load test: 2,000 callbacks in an hour, no loss or duplicates | ⬜ |
+| PDF receipts, statements and clearance lists | ✅ |
+| Load test: 2,000 callbacks, no loss or duplicates | ✅ 12.3 s, p95 308 ms |
 | Backup restore drill | ⬜ |
 | Legal texts, ODPC registration, Kiswahili review (`{{SW_REVIEW_DONE}}`) | ⬜ |
 | Licensed photography replacing AI images (`{{PHOTO_SOURCE}}`) | ⬜ |

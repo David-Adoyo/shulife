@@ -10,6 +10,7 @@ import type { Family, Guardian, Learner, OpenLine, Payment, School, Stream, Term
  */
 
 export const SALT = "demo-salt";
+export const DEMO_TODAY = nairobiDate("2027-02-03", 9, 30).toISOString();
 
 function rng(seed: number) {
   let a = seed >>> 0;
@@ -148,7 +149,7 @@ export function createSchool(seed = 2027): School {
 
   const school: School = {
     org: { id: "org-mlima", name: "Mlima Academy", allocationRule: "oldest_balance", clearancePct: 70, quietStart: "21:00", quietEnd: "07:00", maxPerWeek: 2, officePhone: "0700 000 000", familyPrefix: "FAM" },
-    today: nairobiDate("2027-02-03", 9, 30).toISOString(),
+    today: DEMO_TODAY,
     campuses,
     grades: GRADES,
     streams,
@@ -409,7 +410,8 @@ export function createSchool(seed = 2027): School {
   return school;
 }
 
-function seedCommunication(s: School) {
+/** Demo notices, events and inbox threads (not yet persisted to the database). */
+export function seedCommunication(s: School) {
   const at = (d: string, h = 10) => nairobiDate(d, h).toISOString();
   s.notices.push(
     { id: "n1", title: "Welcome back for Term 1", bodyEn: "School opens on Tuesday 5 January. Please ensure your child arrives by 7:30 am in full uniform.", bodySw: "Shule itafunguliwa Jumanne tarehe 5 Januari. Tafadhali hakikisha mtoto wako anafika kufikia saa 1:30 asubuhi akiwa amevaa sare kamili.", audienceLabel: "Whole school", sentAt: at("2027-01-02"), channels: ["whatsapp", "sms"], stats: { total: 588, delivered: 581, read: 503, failed: 7 } },

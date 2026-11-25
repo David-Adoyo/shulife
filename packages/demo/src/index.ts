@@ -15,6 +15,10 @@ export function getSchool(): School {
   g.__shulifeDemo ??= createSchool();
   return g.__shulifeDemo;
 }
+/** Used when the school is loaded from Postgres at startup. */
+export function setSchool(s: School) {
+  g.__shulifeDemo = s;
+}
 export function resetSchool() {
   g.__shulifeDemo = createSchool();
   return g.__shulifeDemo;
