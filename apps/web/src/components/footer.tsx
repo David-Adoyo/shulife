@@ -4,10 +4,10 @@ import { Icon } from "./icons";
 import { Container } from "./ui";
 
 const columns = [
-  { title: "Schools", links: [["How it works", "#how-it-works"], ["Features", "#features"], ["For directors", "#grow"], ["For bursars", "#collect"], ["Pricing", "#pricing"]] },
-  { title: "Parents", links: [["How to pay", "#connect"], ["Balance on WhatsApp", "#connect"], ["Payment plans", "#plans"], ["Msaada kwa Kiswahili", "#connect"]] },
-  { title: "Company", links: [["About", "#top"], ["Security", "#security"], ["Resources", "#faq"], ["Book a demo", "#demo"]] },
-  { title: "Help", links: [["Help centre", "#faq"], ["Contact", "#demo"], ["Log in", "/login/"]] },
+  { title: "Schools", links: [["How it works", "/how-it-works/"], ["Features", "/features/"], ["For directors", "/for-directors/"], ["For bursars", "/for-bursars/"], ["Pricing", "/pricing/"]] },
+  { title: "Parents", links: [["How to pay", "/for-parents/#pay"], ["Balance on WhatsApp", "/for-parents/#whatsapp"], ["Payment plans", "/for-parents/#plans"], ["Msaada kwa Kiswahili", "/for-parents/?lang=sw"]] },
+  { title: "Company", links: [["About", "/about/"], ["Security", "/security/"], ["Resources", "/resources/"], ["Book a demo", "/book-demo/"]] },
+  { title: "Help", links: [["Help centre", "/help/"], ["Contact", "/help/#contact"], ["Log in", "/login/"]] },
 ];
 
 export function Footer() {
@@ -60,10 +60,10 @@ export function Footer() {
             Kenya · English | Kiswahili
           </p>
           <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-cream-100/70">
-            <li><a href="#security" className="hover:text-cream-50">Privacy</a></li>
-            <li><a href="#security" className="hover:text-cream-50">Terms</a></li>
-            <li><a href="#security" className="hover:text-cream-50">Data protection</a></li>
-            <li><a href="#top" className="hover:text-cream-50">Accessibility</a></li>
+            <li><a href="/legal/privacy/" className="hover:text-cream-50">Privacy</a></li>
+            <li><a href="/legal/terms/" className="hover:text-cream-50">Terms</a></li>
+            <li><a href="/legal/dpa/" className="hover:text-cream-50">Data processing</a></li>
+            <li><a href="/security/" className="hover:text-cream-50">Security</a></li>
           </ul>
         </div>
         <div className="mt-6 flex flex-wrap justify-between gap-4 text-xs text-cream-100/50">

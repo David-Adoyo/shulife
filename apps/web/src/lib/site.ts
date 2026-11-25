@@ -15,6 +15,8 @@ export const site = {
   odpcRegNo: null as string | null, // {{ODPC_REG_NO}}
   pricePerLearnerTerm: null as number | null, // {{PRICE_PER_LEARNER_TERM}} in KES
   bookingUrl: null as string | null, // {{BOOKING_URL}}
+  demoVideoUrl: null as string | null, // {{DEMO_VIDEO_URL}}
+  swReviewDone: false, // {{SW_REVIEW_DONE}}: Kiswahili copy reviewed by a native speaker
 };
 
 export function formatKes(amount: number) {

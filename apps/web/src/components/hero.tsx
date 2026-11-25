@@ -20,8 +20,8 @@ const audiences = {
       </>
     ),
     body: "Shulife matches every M-Pesa payment, splits it between siblings, receipts parents instantly and keeps them informed, so your bursar gets their week back.",
-    primary: { label: "Book a free demo", href: "#demo" },
-    secondary: { label: "See how it works", href: "#how-it-works" },
+    primary: { label: "Book a free demo", href: "/book-demo/" },
+    secondary: { label: "See how it works", href: "/how-it-works/" },
     image: "/images/classroom",
     alt: "A smiling teacher helping a diverse group of happy pupils with their exercise books in a sunlit classroom",
   },
@@ -34,8 +34,8 @@ const audiences = {
       </>
     ),
     body: "Pay into your school's Paybill with your child's admission number. Shulife sends your receipt straight away, and you can check your balance on WhatsApp any time. No app. No password.",
-    primary: { label: "How to pay", href: "#connect" },
-    secondary: { label: "Check your balance", href: "#connect" },
+    primary: { label: "How to pay", href: "/for-parents/#pay" },
+    secondary: { label: "Check your balance", href: "/for-parents/#whatsapp" },
     image: "/images/parent",
     alt: "A happy mother checking her phone at the school gate as her two children in uniform hug her",
   },

@@ -132,7 +132,7 @@ export function ConnectTabs() {
             ))}
           </ul>
           <div className="mt-10">
-            <Button href="#faq" variant="outline-cream" arrow>
+            <Button href="/for-parents/" variant="outline-cream" arrow>
               Parent help
             </Button>
           </div>

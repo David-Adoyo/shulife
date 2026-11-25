@@ -6,3 +6,10 @@
 - **Logo:** the supplied 78×28 and 72×80 PNGs were redrawn as SVG vectors (wordmark outlined from Plus Jakarta Sans ExtraBold) so they stay sharp at every size.
 - **Imagery:** AI-generated photographs of diverse learners and teachers. Swap for licensed photography with model releases (`{{PHOTO_SOURCE}}`) before launch.
 - **Placeholders:** no prices, contacts, testimonials or statistics are invented; the demo form is a preview and does not send data yet.
+
+## 2026-11-25 · Remaining marketing pages
+- **Legal pages** show what each document will cover and a clear "being prepared" notice; no legal text is drafted (§13).
+- **Pricing** shows the model (per learner per term, free until first automatic match) and stays without amounts until `pricePerLearnerTerm` is set in `src/lib/site.ts`. Plan tiers are not shown because their contents are not yet defined.
+- **Kiswahili** on /for-parents is a first draft and must be reviewed by a native speaker before launch (`swReviewDone` in `src/lib/site.ts`).
+- **Resources** guides contain practical advice only — no statistics or customer claims.
+- **Sitemap.xml** is deferred until the production domain (`{{DOMAIN}}`) is confirmed.

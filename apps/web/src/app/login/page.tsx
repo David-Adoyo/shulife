@@ -12,7 +12,7 @@ export default function Login() {
         </a>
         <h1 className="mt-16 font-display text-5xl text-navy-900">Welcome back.</h1>
         <p className="mt-4 max-w-sm text-lg text-ink-600">Sign-in for school staff opens with the Shulife school app. Parents never need a password — use the link in your school's message.</p>
-        <a href="/#demo" className="mt-10 inline-flex h-12 w-fit items-center rounded-full bg-navy-900 px-7 font-semibold text-cream-50 hover:bg-navy-700">
+        <a href="/book-demo/" className="mt-10 inline-flex h-12 w-fit items-center rounded-full bg-navy-900 px-7 font-semibold text-cream-50 hover:bg-navy-700">
           Book a demo instead
         </a>
       </div>

@@ -17,34 +17,34 @@ const menus: Menu[] = [
       {
         title: "Collect fees",
         links: [
-          { label: "Automatic M-Pesa matching", href: "#collect", note: "Every payment, the right learner" },
-          { label: "Sibling splits", href: "#siblings", note: "One payment, every child" },
-          { label: "Instant receipts", href: "#collect", note: "Numbered, QR-verifiable" },
-          { label: "Bank, cash and cheque", href: "#plans" },
+          { label: "Automatic M-Pesa matching", href: "/for-bursars/#matching", note: "Every payment, the right learner" },
+          { label: "Sibling splits", href: "/for-bursars/#siblings", note: "One payment, every child" },
+          { label: "Instant receipts", href: "/features/#collection", note: "Numbered, QR-verifiable" },
+          { label: "Bank, cash and cheque", href: "/for-bursars/#cash" },
         ],
       },
       {
         title: "Run the term",
         links: [
-          { label: "Fee structures and invoices", href: "#how-it-works" },
-          { label: "Payment plans and Ratiba", href: "#plans" },
-          { label: "Kinder clearance", href: "#plans" },
-          { label: "Director's dashboard", href: "#grow" },
+          { label: "Fee structures and invoices", href: "/features/#billing" },
+          { label: "Payment plans and Ratiba", href: "/features/#parents" },
+          { label: "Kinder clearance", href: "/for-directors/#clearance" },
+          { label: "Director's dashboard", href: "/for-directors/" },
         ],
       },
       {
         title: "Who it's for",
         links: [
-          { label: "Directors and owners", href: "#grow" },
-          { label: "Bursars and accounts", href: "#collect" },
-          { label: "Front office and teachers", href: "#connect" },
+          { label: "Directors and owners", href: "/for-directors/" },
+          { label: "Bursars and accounts", href: "/for-bursars/" },
+          { label: "Front office and teachers", href: "/features/#staff" },
         ],
       },
     ],
     footer: [
-      { label: "Book a free demo", href: "#demo" },
-      { label: "How it works", href: "#how-it-works" },
-      { label: "Security", href: "#security" },
+      { label: "How it works", href: "/how-it-works/" },
+      { label: "All features", href: "/features/" },
+      { label: "Security", href: "/security/" },
     ],
   },
   {
@@ -56,38 +56,38 @@ const menus: Menu[] = [
       {
         title: "Pay and track",
         links: [
-          { label: "How to pay school fees", href: "#connect", note: "Paybill + admission number" },
-          { label: "Check your balance", href: "#connect", note: "Send BALANCE or SALIO" },
-          { label: "Statements and receipts", href: "#connect" },
+          { label: "How to pay school fees", href: "/for-parents/#pay", note: "Paybill + admission number" },
+          { label: "Check your balance", href: "/for-parents/#whatsapp", note: "Send BALANCE or SALIO" },
+          { label: "Read your statement", href: "/for-parents/#statement" },
         ],
       },
       {
         title: "Stay in the loop",
         links: [
-          { label: "School notices", href: "#connect" },
-          { label: "Trips and consent forms", href: "#connect" },
-          { label: "Payment plans", href: "#plans" },
+          { label: "Payment plans", href: "/for-parents/#plans" },
+          { label: "Auto-pay with Ratiba", href: "/for-parents/#plans" },
+          { label: "Your privacy", href: "/for-parents/#privacy" },
         ],
       },
       {
         title: "Msaada kwa Kiswahili",
         links: [
-          { label: "Jinsi ya kulipa karo", href: "#connect" },
-          { label: "Angalia salio lako", href: "#connect" },
+          { label: "Jinsi ya kulipa karo", href: "/for-parents/?lang=sw#pay" },
+          { label: "Angalia salio lako", href: "/for-parents/?lang=sw#whatsapp" },
         ],
       },
     ],
     footer: [
-      { label: "Parent help", href: "#faq" },
-      { label: "Privacy", href: "#security" },
+      { label: "Parent help", href: "/for-parents/" },
+      { label: "Questions", href: "/help/#parents" },
     ],
   },
 ];
 
 const simpleLinks: Link[] = [
-  { label: "Pricing", href: "#pricing" },
-  { label: "Security", href: "#security" },
-  { label: "Help", href: "#faq" },
+  { label: "Pricing", href: "/pricing/" },
+  { label: "Resources", href: "/resources/" },
+  { label: "Help", href: "/help/" },
 ];
 
 export function Header() {
@@ -135,7 +135,7 @@ export function Header() {
       onMouseLeave={leave}
     >
       <div className="mx-auto flex h-[72px] w-full max-w-[1240px] items-center gap-8 px-5 sm:px-8 lg:px-12">
-        <a href="#top" className="shrink-0" aria-label="Shulife home">
+        <a href="/" className="shrink-0" aria-label="Shulife home">
           <Wordmark size="md" className="max-sm:h-6" />
         </a>
 
@@ -176,7 +176,7 @@ export function Header() {
             Log in
           </a>
           <a
-            href="#demo"
+            href="/book-demo/"
             className="inline-flex h-11 items-center rounded-full bg-navy-900 px-5 text-[0.95rem] font-semibold text-cream-50 transition hover:bg-navy-700"
           >
             Book a demo
@@ -264,7 +264,7 @@ export function Header() {
             </a>
           ))}
           <div className="mt-8 grid gap-3">
-            <a href="#demo" onClick={() => setMobile(false)} className="inline-flex h-12 items-center justify-center rounded-full bg-navy-900 font-semibold text-cream-50">
+            <a href="/book-demo/" onClick={() => setMobile(false)} className="inline-flex h-12 items-center justify-center rounded-full bg-navy-900 font-semibold text-cream-50">
               Book a demo
             </a>
             <a href="/login/" onClick={() => setMobile(false)} className="inline-flex h-12 items-center justify-center rounded-full border-2 border-navy-900 font-semibold text-navy-900">
