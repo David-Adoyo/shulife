@@ -1,0 +1,11 @@
+{
+  "name": "shulife",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "npm run dev -w @shulife/web",
+    "build": "npm run build -w @shulife/web",
+    "test": "npm test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  }
+}
