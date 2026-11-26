@@ -8,7 +8,7 @@ export const site = {
   tagline: "Every fee. Every parent. On time.",
   description:
     "Shulife matches every M-Pesa payment, splits it between siblings, receipts parents instantly and keeps them informed — school fees collection and parent communication for Kenyan private schools.",
-  domain: null as string | null, // {{DOMAIN}}
+  domain: "shulife.co.ke" as string | null,
   supportPhone: null as string | null, // {{SUPPORT_PHONE}}
   supportEmail: null as string | null, // {{SUPPORT_EMAIL}}
   supportWhatsapp: null as string | null, // {{SUPPORT_WHATSAPP}}

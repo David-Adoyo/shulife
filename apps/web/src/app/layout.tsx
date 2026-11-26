@@ -5,6 +5,7 @@ import "./globals.css";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://shulife.co.ke"),
   title: {
     default: `${site.name} — ${site.tagline}`,
     template: `%s · ${site.name}`,
