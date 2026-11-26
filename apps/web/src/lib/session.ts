@@ -4,7 +4,7 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import { getSchool } from "@shulife/demo";
 import { redirect } from "next/navigation";
 import { supabaseConfigured, supabaseServer } from "./supabase";
-import { getPool } from "./db";
+import { membershipFor } from "./supabase-admin";
 
 /** The demo class teacher teaches Grade 4 East at Ruiru (looked up, so it works with database ids too). */
 function teacherStreams() {
@@ -28,7 +28,7 @@ export const ROLES: { id: Role; label: string; who: string }[] = [
   { id: "class_teacher", label: "Class teacher", who: "Joseph Otieno · Grade 4 East" },
 ];
 
-export type Session = { role: Role; name: string; campusId: string | null; streamIds: string[] };
+export type Session = { role: Role; name: string; campusId: string | null; streamIds: string[]; userId?: string; orgId?: string };
 
 const MFA_ROLES: Role[] = ["director", "head", "bursar"];
 
@@ -40,14 +40,9 @@ async function supabaseSession(): Promise<Session> {
   const sb = await supabaseServer();
   const { data } = await sb.auth.getUser();
   if (!data.user) redirect("/login/");
-  const pool = getPool();
-  if (!pool) throw new Error("DATABASE_URL is required with Supabase Auth");
-  const { rows } = await pool.query(
-    `select role, campus_ids, stream_ids from memberships where user_id = $1 and archived_at is null and role <> 'sponsor'
-     order by array_position(array['director','head','bursar','front_office','class_teacher','transport']::app.role[], role) limit 1`,
-    [data.user.id],
-  );
-  if (!rows[0]) redirect("/login/?error=no-access");
+  const m = await membershipFor(data.user.id);
+  if (!m) redirect("/login/?error=no-access");
+  const rows = [m];
   const role = rows[0].role as Role;
   if (MFA_ROLES.includes(role)) {
     const { data: aal } = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
@@ -61,6 +56,8 @@ async function supabaseSession(): Promise<Session> {
     name: (data.user.user_metadata?.full_name as string) ?? data.user.email ?? "Staff",
     campusId: allowed?.length === 1 ? allowed[0] : campus && campus !== "all" && (!allowed || allowed.includes(campus)) ? campus : null,
     streamIds: rows[0].stream_ids ?? [],
+    userId: data.user.id,
+    orgId: rows[0].org_id,
   };
 }
 

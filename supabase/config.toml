@@ -1,0 +1,14 @@
+# Supabase CLI project config (minimal). Migrations live in supabase/migrations and are
+# generated from packages/db/migrations by scripts/supabase-apply.mjs.
+project_id = "shulife"
+
+[api]
+schemas = ["public", "graphql_public"]
+
+[auth]
+site_url = "http://localhost:3000"
+enable_signup = false
+
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true

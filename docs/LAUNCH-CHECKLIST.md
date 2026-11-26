@@ -5,7 +5,10 @@
 | Core engines tested (money, billing, matching, allocation, reminders, clearance, projection) | ✅ `npm test` |
 | RLS isolation and integrity tested | ✅ `npm run test:db` |
 | ≥ 90% auto-match on 300 simulated payments | ✅ `packages/demo/test/seed.test.ts` |
-| Supabase project, migrations applied, auth with TOTP for director/head/bursar | ⬜ needs project |
+| Supabase project, migrations applied, auth with TOTP for director/head/bursar | ✅ tested live (invite → password → authenticator → app) |
+| Booking form saves to Supabase; admin console shows bookings | ✅ tested live |
+| Custom SMTP for Supabase Auth emails (free-tier limits) | ⬜ |
+| First director and Shulife admin accounts | ⬜ |
 | Postgres-backed data source (load at startup, write-through) | ✅ `bash packages/db/scripts/pgtest.sh` |
 | Read models fully in SQL (needed for more than one app instance) | ⬜ |
 | Daraja sandbox end-to-end (C2B, STK success/failure, duplicates, reversals) | ⬜ needs keys |
@@ -20,4 +23,4 @@
 | Mobile app (Expo): dashboard, review queue, offline cash receipts with camera | ✅ type-checks and bundles for Android; not yet run on a device |
 | Mobile: Supabase sign-in in the app, push notifications, signed APK (`eas build`) | ⬜ |
 | Reminder job every 15 minutes, idempotent, dry run without keys | ✅ |
-| Supabase Auth with TOTP for director/head/bursar | ✅ written; ⬜ untested until a Supabase project exists |
+

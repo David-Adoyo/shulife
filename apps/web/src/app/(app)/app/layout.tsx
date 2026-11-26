@@ -26,6 +26,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     { href: "/app/notices/", label: "Notices", icon: Icon.Bell, show: can.sendNotice(session.role) },
     { href: "/app/clearance/", label: "Clearance", icon: Icon.Shield, show: true },
     { href: "/app/reports/", label: "Reports", icon: Icon.Calendar, show: can.reports(session.role) },
+    { href: "/app/team/", label: "Team", icon: Icon.Users, show: session.role === "director" },
     { href: "/app/onboarding/", label: "Set-up", icon: Icon.Sparkle, show: can.settings(session.role) },
   ].filter((n) => n.show);
   const campus = s.campuses.find((c) => c.id === session.campusId);

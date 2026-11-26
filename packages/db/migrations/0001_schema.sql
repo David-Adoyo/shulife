@@ -240,7 +240,7 @@ create table payment_integrations (
   id uuid primary key default gen_random_uuid(), org_id uuid not null references organisations(id), campus_id uuid references campuses(id),
   provider text not null check (provider in ('mpesa_paybill', 'mpesa_till', 'bank_import', 'manual')),
   shortcode text, environment text not null default 'sandbox' check (environment in ('sandbox', 'production')),
-  vault_secret_ref text, callback_secret text not null default encode(gen_random_bytes(24), 'hex'), last_verified_at timestamptz,
+  vault_secret_ref text, callback_secret text not null default replace(gen_random_uuid()::text, '-', '') || replace(gen_random_uuid()::text, '-', ''), last_verified_at timestamptz,
   created_at timestamptz not null default now(), updated_at timestamptz not null default now(), created_by uuid
 );
 create table raw_mpesa_events (

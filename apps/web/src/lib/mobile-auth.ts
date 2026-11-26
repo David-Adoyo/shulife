@@ -1,7 +1,7 @@
 import "server-only";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
-import { getPool } from "./db";
+import { membershipFor } from "./supabase-admin";
 import { supabaseConfigured } from "./supabase";
 import type { Role } from "./session";
 
@@ -25,8 +25,8 @@ export async function mobileUser(req: Request): Promise<MobileUser | null> {
     const sb = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
     const { data } = await sb.auth.getUser(token);
     if (!data.user) return null;
-    const { rows } = (await getPool()?.query(`select role from memberships where user_id = $1 and archived_at is null and role in ('director','bursar') limit 1`, [data.user.id])) ?? { rows: [] };
-    return rows[0] ? { role: rows[0].role, name: data.user.email ?? "Staff" } : null;
+    const m = await membershipFor(data.user.id);
+    return m && (m.role === "director" || m.role === "bursar") ? { role: m.role, name: data.user.email ?? "Staff" } : null;
   }
   const [body, sig] = token.split(".");
   if (!body || !sig) return null;

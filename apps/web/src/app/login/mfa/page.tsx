@@ -26,6 +26,7 @@ export default async function Mfa({ searchParams }: { searchParams: Promise<{ en
         )}
         {error && <p className="mt-4 rounded-lg bg-due/10 p-3 text-sm text-due">That code didn’t work. Please try again.</p>}
         <form action={verifyTotp} className="mt-6 space-y-3">
+          {setup && <input type="hidden" name="factorId" value={setup.factorId} />}
           <input name="code" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9 ]{6,7}" required placeholder="123 456" className="h-12 w-full rounded-xl border border-cream-200 px-4 text-center font-mono text-xl tracking-widest" />
           <button className="h-12 w-full rounded-full bg-navy-900 font-semibold text-cream-50">Verify</button>
         </form>

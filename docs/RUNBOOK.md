@@ -22,6 +22,24 @@ DATABASE_URL=… BASE=http://localhost:3000 node packages/db/scripts/loadtest.mj
 ```
 Last run: 2,000 callbacks (200 repeats) in 12.3 s · p95 308 ms · 0 lost · 0 duplicates · 2,000 raw events stored · 90% auto-matched.
 
+## Supabase project (tvlowbpfdsdlijbepxeu, eu-west-1)
+Built on 26 Nov 2026 through the Management API:
+- **Migrations** `supabase/migrations/20261126000001…07` (also recorded in `supabase_migrations.schema_migrations`, so `supabase db push` stays in sync). Re-run with `NODE_USE_ENV_PROXY=1 SUPABASE_ACCESS_TOKEN=sbp_… node scripts/supabase-apply.mjs tvlowbpfdsdlijbepxeu` — already-applied files are skipped.
+- 57 tables, all with RLS (138 policies), 48 integrity triggers; anon has no table privileges; Supabase security advisor clean (one intentional note: `parent_login_codes` is service-role only).
+- **Sign-in:** public sign-up off (staff join by invitation from Team), passwords ≥ 10 characters, TOTP on — required for director, head and bursar. New users get a `profiles` row; a pending `staff_invitations` row for their email becomes a `memberships` row automatically.
+- **Bookings:** "Book a demo" writes `demo_requests`; only users in `shulife_admins` can read them (admin console).
+- **Storage:** private buckets `crests`, `receipts`, `statements`, `slips`, `consent`; paths start with the organisation id.
+- **Demo data:** the fictional Mlima Academy is loaded so the app has something to show. Remove it before onboarding a real school: run `scripts/remove-demo.sql` in the SQL editor.
+
+### Still to do in Supabase (needs you)
+1. **First director and Shulife admin:** create your user in Authentication → Users → Invite, then in the SQL editor:
+   `insert into memberships (org_id, user_id, role) select o.id, u.id, 'director' from organisations o, auth.users u where u.email = 'you@…';`
+   `insert into shulife_admins (user_id) select id from auth.users where email = 'you@…';`
+2. **Email:** the free plan's built-in email sends only a few messages an hour and its templates can't be edited. Add custom SMTP (Authentication → Emails → SMTP, e.g. Resend), then the Shulife-branded templates can be applied.
+3. **Site URL:** when the site is deployed, set Authentication → URL Configuration → Site URL to the live address and add `https://<domain>/**` to Redirect URLs.
+4. **Database password** for `DATABASE_URL` (Project Settings → Database → Connection string → Session pooler) — needed for the school data, payments and the reminder job.
+5. **Rotate the secret key** that was shared in chat (Project Settings → API Keys) and update `SUPABASE_SECRET_KEY` wherever it is set.
+
 ## Going live with Supabase
 1. Create a Supabase project; run `packages/db/migrations/*.sql` in order (not `packages/db/local/` — that is a local stand-in for Supabase's own auth schema).
 2. Fill `.env.local` from `.env.example`.

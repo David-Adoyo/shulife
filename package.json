@@ -11,5 +11,8 @@
     "test": "npm test -w @shulife/core -w @shulife/demo -w @shulife/integrations",
     "typecheck": "npm run typecheck -w @shulife/core -w @shulife/demo -w @shulife/integrations",
     "test:db": "npm test -w @shulife/db"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.3"
   }
 }

@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+- Supabase project built: all migrations, storage buckets, sign-in settings, demo school; security advisor clean.
+- Sign-in tables (profiles, staff invitations, Shulife admins, parent login codes) and bookings (`demo_requests`).
+- Team page (invite staff by email), invite/reset links, set-password page; booking form saves to Supabase; admin console lists bookings and is limited to Shulife admins.
 - PDF receipts (A5, QR verification), family fee statements and teacher clearance lists.
 - Postgres persistence: load the school at startup, write every payment, review decision and manual receipt through; load test passes (2,000 callbacks, 0 lost, 0 duplicates, p95 308 ms).
 - Reminder job (`/api/jobs/reminders`, every 15 minutes) with SMS/WhatsApp senders and dry-run mode.

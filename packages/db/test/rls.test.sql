@@ -187,4 +187,26 @@ select pg_temp.expect_error('override needs a reason', $q$update clearance_statu
 insert into learners (org_id, campus_id, family_id, admission_number, first_name, last_name) values ('aaaaaaaa-0000-0000-0000-000000000000', 'aaaaaaaa-0000-0000-0000-0000000000c2', 'aaaaaaaa-0000-0000-0000-0000000000f0', '2041', 'Same', 'Number');
 select pg_temp.check('same admission number allowed on another campus', (select count(*) from learners where admission_number = '2041'), 3);
 select pg_temp.check('money and contact changes are audited', (select (count(*) >= 4)::int from audit_log where entity in ('payments', 'adjustments', 'guardians')), 1);
+-- Sign-in and bookings
+insert into staff_invitations (org_id, email, role, stream_ids, invited_by) values ('aaaaaaaa-0000-0000-0000-000000000000', 'new.teacher@x', 'class_teacher', '{aaaaaaaa-0000-0000-0000-00000000004e}', '00000000-0000-0000-0000-0000000000d1');
+insert into auth.users (id, email, raw_user_meta_data) values ('00000000-0000-0000-0000-0000000000a9', 'New.Teacher@x', '{"full_name":"New Teacher"}');
+select pg_temp.check('accepting an invitation creates the membership', (select count(*) from memberships where user_id = '00000000-0000-0000-0000-0000000000a9' and role = 'class_teacher'), 1);
+select pg_temp.check('a profile is created for every new user', (select count(*) from profiles where id = '00000000-0000-0000-0000-0000000000a9' and full_name = 'New Teacher'), 1);
+insert into demo_requests (school_name, role, phone) values ('Test School', 'Director', '254712345678');
+begin; select pg_temp.as_user('00000000-0000-0000-0000-0000000000d1'); set local role authenticated;
+select pg_temp.check('school directors cannot read demo bookings', (select count(*) from demo_requests), 0);
+select pg_temp.check('directors see their invitations', (select count(*) from staff_invitations), 1);
+select pg_temp.expect_error('parent login codes are service-role only', 'select count(*) from parent_login_codes');
+commit;
+begin; select pg_temp.as_user('00000000-0000-0000-0000-0000000000d2'); set local role authenticated;
+select pg_temp.check('other schools cannot see invitations', (select count(*) from staff_invitations), 0);
+select pg_temp.expect_error('other schools cannot invite into school A', $q$insert into staff_invitations (org_id, email, role, invited_by) values ('aaaaaaaa-0000-0000-0000-000000000000', 'x@y', 'bursar', '00000000-0000-0000-0000-0000000000d2')$q$);
+commit;
+insert into shulife_admins (user_id) values ('00000000-0000-0000-0000-0000000000d2');
+begin; select pg_temp.as_user('00000000-0000-0000-0000-0000000000d2'); set local role authenticated;
+select pg_temp.check('Shulife admins read demo bookings', (select count(*) from demo_requests), 1);
+commit;
+begin; set local role anon;
+select pg_temp.expect_error('anonymous visitors cannot read bookings', 'select count(*) from demo_requests');
+commit;
 \echo ALL RLS TESTS PASSED

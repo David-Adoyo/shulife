@@ -3,6 +3,10 @@ import { capabilities, formatKesShort } from "@shulife/core";
 import { dashboard, getSchool, reviewQueue } from "@shulife/demo";
 import { Card, Kpi, PageTitle } from "@/components/app/ui";
 import { Wordmark } from "@/components/brand";
+import { redirect } from "next/navigation";
+import { supabaseConfigured, supabaseServer } from "@/lib/supabase";
+import { isShulifeAdmin, supabaseAdmin } from "@/lib/supabase-admin";
+import { formatDate, formatTime } from "@shulife/core";
 
 /**
  * Shulife admin console (§10.4). Internal staff only (Supabase role check in production).
@@ -11,7 +15,14 @@ import { Wordmark } from "@/components/brand";
 export const metadata: Metadata = { title: "Admin", robots: { index: false } };
 export const dynamic = "force-dynamic";
 
-export default function Admin() {
+export default async function Admin() {
+  // With Supabase on, only Shulife admins (shulife_admins table) may open the console.
+  let leads: { id: string; school_name: string; role: string; learners_band: string | null; county: string | null; phone: string; best_time: string | null; status: string; created_at: string }[] = [];
+  if (supabaseConfigured()) {
+    const { data } = await (await supabaseServer()).auth.getUser();
+    if (!data.user || !(await isShulifeAdmin(data.user.id))) redirect("/login/");
+    leads = (await supabaseAdmin()!.from("demo_requests").select("*").order("created_at", { ascending: false }).limit(100)).data ?? [];
+  }
   const s = getSchool();
   const d = dashboard(s);
   const caps = capabilities("active");
@@ -59,8 +70,24 @@ export default function Admin() {
           </table>
         </Card>
         <div className="mt-6 grid gap-5 md:grid-cols-2">
-          <Card title="Demo bookings (leads)">
-            <p className="text-sm text-ink-600">Leads from /book-demo appear here once the form is connected to the database.</p>
+          <Card title={`Demo bookings (${leads.length})`}>
+            {leads.length === 0 ? (
+              <p className="text-sm text-ink-600">{supabaseConfigured() ? "No bookings yet. Requests from /book-demo appear here." : "Connect Supabase to collect bookings from /book-demo."}</p>
+            ) : (
+              <ul className="divide-y divide-cream-200 text-sm">
+                {leads.map((l) => (
+                  <li key={l.id} className="py-2.5">
+                    <div className="flex justify-between gap-2">
+                      <span className="font-semibold text-navy-900">{l.school_name}</span>
+                      <span className="rounded-full bg-cream-100 px-2 text-xs font-semibold capitalize text-navy-900">{l.status.replace("_", " ")}</span>
+                    </div>
+                    <p className="text-ink-600">
+                      {l.role} · {l.learners_band ?? "?"} learners · {l.county ?? "—"} · 0{l.phone.slice(3)} · {l.best_time ?? ""} · {formatDate(new Date(l.created_at))} {formatTime(new Date(l.created_at))}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            )}
           </Card>
           <Card title="Always on">
             <p className="text-sm text-ink-600">Whatever a school’s subscription state, these keep running: payment matching ({String(caps.paymentIngestion)}), receipts ({String(caps.receipts)}) and parent balances ({String(caps.parentBalances)}).</p>
