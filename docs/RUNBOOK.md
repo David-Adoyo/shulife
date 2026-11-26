@@ -22,6 +22,14 @@ DATABASE_URL=… BASE=http://localhost:3000 node packages/db/scripts/loadtest.mj
 ```
 Last run: 2,000 callbacks (200 repeats) in 12.3 s · p95 308 ms · 0 lost · 0 duplicates · 2,000 raw events stored · 90% auto-matched.
 
+## Vercel (production)
+- **Live:** https://shulife.vercel.app — project `shulife` on the `adoyos-team` account (Hobby plan), root directory `apps/web`, Node 22.
+- **Deploy:** `npx vercel@65.14.0 deploy --prod --scope team_FKFbHPzPtm1TKhCTxcnDVdh6` from the repository root (`.vercel/project.json` links the project; `.vercelignore` keeps node_modules, the mobile app and local env files out of uploads). Connecting the GitHub repository in Vercel → Settings → Git gives automatic deploys instead.
+- **Environment variables (Production and Preview):** `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SECRET_KEY`, `PARENT_TOKEN_SECRET`, `CRON_SECRET`, `MPESA_CALLBACK_SECRET_RUI`, `MPESA_CALLBACK_SECRET_SYO`, `REMINDER_WINDOW_MINUTES=1440`. Not yet set: `DATABASE_URL` (school data and payments are the in-memory demo until it is), SMS/WhatsApp/Paystack/Resend keys.
+- **Reminder job:** daily at 07:00 UTC (10:00 Nairobi) because Hobby allows one run a day; it catches up on the previous 24 hours. On Pro, set the schedule to `*/15 * * * *` and remove `REMINDER_WINDOW_MINUTES`.
+- **M-Pesa callback paths** use the `MPESA_CALLBACK_SECRET_*` values: `https://shulife.vercel.app/api/webhooks/mpesa/rui/<secret>/confirmation` (read the value in Vercel → Settings → Environment Variables when registering URLs with Daraja).
+- **Supabase Auth** points at the live site (Site URL and Redirect URLs).
+
 ## Supabase project (tvlowbpfdsdlijbepxeu, eu-west-1)
 Built on 26 Nov 2026 through the Management API:
 - **Migrations** `supabase/migrations/20261126000001…07` (also recorded in `supabase_migrations.schema_migrations`, so `supabase db push` stays in sync). Re-run with `NODE_USE_ENV_PROXY=1 SUPABASE_ACCESS_TOKEN=sbp_… node scripts/supabase-apply.mjs tvlowbpfdsdlijbepxeu` — already-applied files are skipped.
