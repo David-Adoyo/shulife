@@ -5,7 +5,7 @@ import { getPool, orgId, serial } from "@/lib/db";
 import { signParentToken } from "@/lib/session";
 
 /**
- * Reminder job — call every 15 minutes (vercel.json cron, or any scheduler) with
+ * Reminder job — call every 15 minutes (or daily with REMINDER_WINDOW_MINUTES=1440) with
  * `Authorization: Bearer $CRON_SECRET`. Without SMS/WhatsApp keys it is a dry run.
  */
 export const dynamic = "force-dynamic";
@@ -36,7 +36,9 @@ export async function GET(req: Request) {
     const sent = (g.__sentKeys ??= new Set());
     if (pool && org) for (const r of (await pool.query(`select idempotency_key from messages_outbox where org_id = $1`, [org])).rows) sent.add(r.idempotency_key);
     const now = process.env.SHULIFE_TODAY === "now" || !process.env.SHULIFE_JOB_AT ? new Date() : new Date(process.env.SHULIFE_JOB_AT);
-    const due = dueMessages(s, { now, sent, link: (id) => `${origin}/p/${signParentToken(id)}/` });
+    // Vercel Hobby runs crons once a day: REMINDER_WINDOW_MINUTES=1440 catches up on the last 24 hours.
+    const windowMinutes = Number(process.env.REMINDER_WINDOW_MINUTES ?? 15);
+    const due = dueMessages(s, { now, windowMinutes, sent, link: (id) => `${origin}/p/${signParentToken(id)}/` });
     const before = new Set(sent);
     const configured = senders();
     const result = await dispatch(due, configured, sent);
