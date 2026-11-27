@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
+import { school } from "@/lib/db";
 import { formatKesShort } from "@shulife/core";
-import { getSchool, reports } from "@shulife/demo";
+import { reports } from "@shulife/demo";
 import { Card, KSh, PageTitle } from "@/components/app/ui";
 import { can, getSession } from "@/lib/session";
 
@@ -11,7 +12,7 @@ const CHANNEL: Record<string, string> = { c2b: "M-Pesa Paybill", bank_import: "B
 export default async function Reports() {
   const session = await getSession();
   if (!can.reports(session.role)) redirect("/app/");
-  const s = getSchool();
+  const s = await school();
   const r = reports(s, session.campusId);
   const max = Math.max(...r.byGrade.map((g) => g.billed));
 

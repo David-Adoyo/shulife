@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import { school } from "@/lib/db";
 import { formatDate, formatKes } from "@shulife/core";
-import { getSchool, verifyReceipt } from "@shulife/demo";
+import { verifyReceipt } from "@shulife/demo";
 import { Wordmark } from "@/components/brand";
 import { Icon } from "@/components/icons";
 
@@ -10,7 +11,7 @@ export const dynamic = "force-dynamic";
 
 export default async function VerifyReceipt({ params }: { params: Promise<{ code: string }> }) {
   const { code } = await params;
-  const r = verifyReceipt(getSchool(), code);
+  const r = verifyReceipt((await school()), code);
   return (
     <main className="flex min-h-screen items-center justify-center bg-cream-50 p-5">
       <div className="w-full max-w-sm rounded-3xl bg-white p-8 text-center shadow-lift">

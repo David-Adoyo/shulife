@@ -1,5 +1,6 @@
 import { formatDate, gradeName, isoDateNairobi, teacherView } from "@shulife/core";
-import { clearanceForStream, clearanceInput, getSchool } from "@shulife/demo";
+import { school } from "@/lib/db";
+import { clearanceForStream, clearanceInput } from "@shulife/demo";
 import { Card, PageTitle, Pill } from "@/components/app/ui";
 import { can, getSession } from "@/lib/session";
 
@@ -14,7 +15,7 @@ const COLUMNS = [
 
 export default async function Clearance({ searchParams }: { searchParams: Promise<{ stream?: string }> }) {
   const session = await getSession();
-  const s = getSchool();
+  const s = await school();
   const event = s.events.find((e) => e.kind === "exam")!;
   const teacher = session.role === "class_teacher";
   const streams = teacher ? s.streams.filter((st) => session.streamIds.includes(st.id)) : s.streams.filter((st) => !session.campusId || st.campusId === session.campusId);

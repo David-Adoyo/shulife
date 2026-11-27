@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
+import { school } from "@/lib/db";
 import { formatDate, formatTime, gradeName } from "@shulife/core";
-import { familyDetail, getSchool } from "@shulife/demo";
+import { familyDetail } from "@shulife/demo";
 import { Card, KSh, MatchBadge, PageTitle, Pill, SplitBar, balancePill } from "@/components/app/ui";
 import { Icon } from "@/components/icons";
 import { can, getSession, signParentToken } from "@/lib/session";
@@ -23,7 +24,7 @@ export default async function FamilyPage({ params, searchParams }: { params: Pro
   if (!can.seeMoney(session.role)) redirect("/app/clearance/");
   const { id } = await params;
   const { receipt, tab } = await searchParams;
-  const s = getSchool();
+  const s = await school();
   const d = familyDetail(s, id);
   if (!d) notFound();
   const active = d.kids.find((k) => k.learner.id === tab) ?? d.kids[0];

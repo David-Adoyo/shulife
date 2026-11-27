@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
+import { school } from "@/lib/db";
 import { formatDate, formatTime } from "@shulife/core";
-import { getSchool, reviewQueue } from "@shulife/demo";
+import { reviewQueue } from "@shulife/demo";
 import { Card, Empty, KSh, PageTitle } from "@/components/app/ui";
 import { Icon } from "@/components/icons";
 import { can, getSession } from "@/lib/session";
@@ -12,7 +13,7 @@ export const metadata = { title: "Review queue" };
 export default async function Review() {
   const session = await getSession();
   if (!can.review(session.role)) redirect("/app/");
-  const s = getSchool();
+  const s = await school();
   const queue = reviewQueue(s).filter((p) => !session.campusId || p.campusId === session.campusId);
   const card = queue[0];
 

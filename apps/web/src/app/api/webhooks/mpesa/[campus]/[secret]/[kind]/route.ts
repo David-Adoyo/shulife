@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { C2B_CONFIRMATION_RESPONSE, C2B_VALIDATION_RESPONSE, hashMsisdn, last3, parseDarajaC2B, type DarajaC2B } from "@shulife/core";
-import { getSchool, ingest, SALT, type Payment } from "@shulife/demo";
+import { ingest, SALT, type Payment } from "@shulife/demo";
 import { timingSafeEqual } from "node:crypto";
 import { persistIngest, saveRawEvent } from "@shulife/db";
-import { orgId, reloadFromDb, serial, withDb } from "@/lib/db";
+import { orgId, reloadFromDb, serial, withDb, writeStep } from "@/lib/db";
 
 /**
  * Safaricom Daraja C2B callbacks (§7.2): /api/webhooks/mpesa/{campus}/{secret}/{validation|confirmation}
@@ -43,17 +43,17 @@ export async function POST(req: Request, { params }: { params: Promise<{ campus:
   else rawEvents.push({ at: new Date().toISOString(), campus, body });
   try {
     const n = parseDarajaC2B(body);
-    const s = getSchool();
-    const c = s.campuses.find((x) => x.code === campus.toUpperCase()) ?? s.campuses[0];
-    const term = s.terms.find((t) => t.status === "open")!;
-    const hasPhone = n.msisdn && /^\d{9,12}$/.test(n.msisdn);
-    const p: Payment = { id: crypto.randomUUID(), providerRef: n.providerRef, campusId: c.id, amount: n.amount, billRef: n.billRef, phoneLast3: hasPhone ? last3(n.msisdn!) : null, phoneHash: hasPhone ? hashMsisdn(n.msisdn!, SALT) : n.msisdn, payerName: n.payerName, paidAt: n.paidAt, channel: "c2b", matchStatus: "unmatched", matchKind: "—", confidence: null, familyId: null, learnerId: null, rule: null, split: [], credit: 0, receiptNo: null, verifyCode: null, termId: term.id, suggestions: [] };
-    const result = await serial(async () => {
+    let p!: Payment;
+    const result = await writeStep(async (s) => {
+      const c = s.campuses.find((x) => x.code === campus.toUpperCase()) ?? s.campuses[0];
+      const term = s.terms.find((t) => t.status === "open")!;
+      const hasPhone = n.msisdn && /^\d{9,12}$/.test(n.msisdn);
+      p = { id: crypto.randomUUID(), providerRef: n.providerRef, campusId: c.id, amount: n.amount, billRef: n.billRef, phoneLast3: hasPhone ? last3(n.msisdn!) : null, phoneHash: hasPhone ? hashMsisdn(n.msisdn!, SALT) : n.msisdn, payerName: n.payerName, paidAt: n.paidAt, channel: "c2b", matchStatus: "unmatched", matchKind: "—", confidence: null, familyId: null, learnerId: null, rule: null, split: [], credit: 0, receiptNo: null, verifyCode: null, termId: term.id, suggestions: [] };
       const before = s.ledger.length;
       let r: string = ingest(s, p);
       const entries = s.ledger.slice(before); // capture now, before any await
       if (r !== "duplicate") {
-        const saved = await withDb((c) => persistIngest(c, s, p, entries));
+        const saved = await withDb((db) => persistIngest(db, s, p, entries));
         if (saved === "duplicate") r = "duplicate"; // another server already took it
       }
       return r;

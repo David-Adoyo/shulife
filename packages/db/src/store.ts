@@ -191,6 +191,12 @@ export async function firstOrgId(db: Db): Promise<string | null> {
   return r.rows[0]?.id ?? null;
 }
 
+/** The school's change counter (bumped by triggers on every write). */
+export async function orgVersion(db: Db, orgId: string): Promise<number> {
+  const r = await db.query(`select version from org_versions where org_id = $1`, [orgId]);
+  return Number(r.rows[0]?.version ?? 0);
+}
+
 /** Rebuild the school model from Postgres. Ids are the database UUIDs. */
 export async function loadSchool(db: Db, orgId: string, opts: { today: string }): Promise<School> {
   const q = async <T = Record<string, any>>(sql: string) => (await db.query(sql, [orgId])).rows as T[];

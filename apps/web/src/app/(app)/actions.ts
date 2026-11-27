@@ -4,9 +4,9 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { kes, resolveAudience, checkTone } from "@shulife/core";
-import { getSchool, ingest, resetSchool, resolveReview, type Payment } from "@shulife/demo";
+import { ingest, resetSchool, resolveReview, type Payment } from "@shulife/demo";
 import { can, getSession, ROLES, type Role } from "@/lib/session";
-import { serial, withDb } from "@/lib/db";
+import { withDb, school, writeStep } from "@/lib/db";
 import { persistIngest, persistResolution } from "@shulife/db";
 
 export async function setRole(formData: FormData) {
@@ -26,8 +26,7 @@ export async function resolveCard(formData: FormData) {
   if (!can.review(session.role)) throw new Error("Not allowed");
   const id = String(formData.get("paymentId"));
   const family = formData.get("familyId");
-  await serial(async () => {
-    const s = getSchool();
+  await writeStep(async (s) => {
     const n = s.ledger.length;
     const p = resolveReview(s, id, family ? { familyId: String(family) } : { notOurs: true });
     const entries = s.ledger.slice(n);
@@ -39,27 +38,28 @@ export async function resolveCard(formData: FormData) {
 export async function recordManualReceipt(formData: FormData) {
   const session = await getSession();
   if (!can.manualReceipt(session.role)) throw new Error("Not allowed");
-  const s = getSchool();
   const familyId = String(formData.get("familyId"));
   const amount = kes(String(formData.get("amount") ?? "0"));
   const channel = String(formData.get("channel")) as "cash" | "cheque" | "bank_slip";
   const bookRef = String(formData.get("bookRef") ?? "").trim();
   if (!bookRef || amount <= 0) throw new Error("Enter an amount and the receipt-book number");
-  const fam = s.families.find((f) => f.id === familyId)!;
-  const term = s.terms.find((t) => t.status === "open")!;
-  const p: Payment = { id: crypto.randomUUID(), providerRef: `${channel.toUpperCase()}-${crypto.randomUUID().slice(0, 13)}`, campusId: fam.campusId, amount, billRef: null, phoneLast3: null, phoneHash: null, payerName: null, paidAt: process.env.SHULIFE_TODAY === "now" ? new Date().toISOString() : s.today, channel, matchStatus: "unmatched", matchKind: "—", confidence: null, familyId: null, learnerId: null, rule: null, split: [], credit: 0, receiptNo: null, verifyCode: null, termId: term.id, suggestions: [], bookRef, receivedBy: session.name, banked: false };
-  await serial(async () => {
+  const providerRef = `${channel.toUpperCase()}-${crypto.randomUUID().slice(0, 13)}`;
+  const p = await writeStep(async (s) => {
+    const fam = s.families.find((f) => f.id === familyId)!;
+    const term = s.terms.find((t) => t.status === "open")!;
+    const p: Payment = { id: crypto.randomUUID(), providerRef, campusId: fam.campusId, amount, billRef: null, phoneLast3: null, phoneHash: null, payerName: null, paidAt: process.env.SHULIFE_TODAY === "now" ? new Date().toISOString() : s.today, channel, matchStatus: "unmatched", matchKind: "—", confidence: null, familyId: null, learnerId: null, rule: null, split: [], credit: 0, receiptNo: null, verifyCode: null, termId: term.id, suggestions: [], bookRef, receivedBy: session.name, banked: false };
     const n = s.ledger.length;
     ingest(s, p, { manualFamilyId: familyId });
     const entries = s.ledger.slice(n);
     await withDb((c) => persistIngest(c, s, p, entries));
+    return p;
   });
   revalidatePath("/app", "layout");
   redirect(`/app/families/${familyId}/?receipt=${p.receiptNo}`);
 }
 
 export async function previewAudience(_: unknown, formData: FormData) {
-  const s = getSchool();
+  const s = await school();
   const kind = String(formData.get("kind"));
   const value = String(formData.get("value") ?? "");
   const body = String(formData.get("body") ?? "");

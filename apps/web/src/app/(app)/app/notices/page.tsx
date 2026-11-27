@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
+import { school } from "@/lib/db";
 import { formatDate, gradeName } from "@shulife/core";
-import { getSchool } from "@shulife/demo";
+
 import { Card, PageTitle } from "@/components/app/ui";
 import { NoticeComposer } from "@/components/app/notice-composer";
 import { can, getSession } from "@/lib/session";
@@ -10,7 +11,7 @@ export const metadata = { title: "Notices" };
 export default async function Notices() {
   const session = await getSession();
   if (!can.sendNotice(session.role)) redirect("/app/");
-  const s = getSchool();
+  const s = await school();
   const teacher = session.role === "class_teacher";
   const streams = s.streams.filter((st) => !teacher || session.streamIds.includes(st.id));
 

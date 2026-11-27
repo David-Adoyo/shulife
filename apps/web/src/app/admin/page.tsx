@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import { school } from "@/lib/db";
 import { capabilities, formatKesShort } from "@shulife/core";
-import { dashboard, getSchool, reviewQueue } from "@shulife/demo";
+import { dashboard, reviewQueue } from "@shulife/demo";
 import { Card, Kpi, PageTitle } from "@/components/app/ui";
 import { Wordmark } from "@/components/brand";
 import { redirect } from "next/navigation";
@@ -23,7 +24,7 @@ export default async function Admin() {
     if (!data.user || !(await isShulifeAdmin(data.user.id))) redirect("/login/");
     leads = (await supabaseAdmin()!.from("demo_requests").select("*").order("created_at", { ascending: false }).limit(100)).data ?? [];
   }
-  const s = getSchool();
+  const s = await school();
   const d = dashboard(s);
   const caps = capabilities("active");
   const schools = [{ name: s.org.name, campuses: s.campuses.length, learners: s.learners.length, auto: d.autoMatchRate, queue: reviewQueue(s).length, sub: "trial", webhookFailures: 0, messageFailures: 14, consent: false }];

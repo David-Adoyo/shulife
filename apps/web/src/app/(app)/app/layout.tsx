@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { getSchool, reviewQueue, currentTerm } from "@shulife/demo";
+import { school } from "@/lib/db";
+import { reviewQueue, currentTerm } from "@shulife/demo";
 import { Mark } from "@/components/brand";
 import { Icon } from "@/components/icons";
 import { can, getSession, ROLES } from "@/lib/session";
@@ -12,7 +13,7 @@ export const metadata: Metadata = { title: { default: "School app", template: "%
 export const dynamic = "force-dynamic";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const s = getSchool();
+  const s = await school();
   const session = await getSession();
   const term = currentTerm(s);
   const queue = reviewQueue(s).length;

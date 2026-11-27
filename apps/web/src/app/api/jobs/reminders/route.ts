@@ -1,8 +1,36 @@
 import { NextResponse } from "next/server";
-import { dispatch, dueMessages, getSchool, type OutboxMessage, type Sender } from "@shulife/demo";
+import { dashboard, dispatch, dueMessages, type OutboxMessage, type Sender, type School } from "@shulife/demo";
 import { createSms, createWhatsApp } from "@shulife/integrations";
-import { getPool, orgId, serial } from "@/lib/db";
+import { getPool, orgId, serial, school } from "@/lib/db";
 import { signParentToken } from "@/lib/session";
+import { compose, directorEmails, sendEmail } from "@/lib/email";
+
+const kes = (cents: number) => `KSh ${Math.round(cents / 100).toLocaleString("en-KE")}`;
+
+/** Morning summary for each director: where the term stands and what needs attention. */
+async function directorSummary(s: School, org: string, origin: string) {
+  const to = await directorEmails(org);
+  if (!to.length) return { summary: "no directors with email" };
+  const d = dashboard(s);
+  const res = await sendEmail(
+    compose("director_summary", to, `${s.org.name}: ${d.pct}% collected`, {
+      heading: `${d.term.name}: ${d.pct}% of fees collected`,
+      intro: `Here’s where ${s.org.name} stands this morning.`,
+      rows: [
+        ["Collected this term", kes(d.collected)],
+        ["Still outstanding", kes(d.outstanding)],
+        ["Paid yesterday and today", `${d.paymentsToday} payments, ${kes(d.collectedToday)}`],
+        ["Matched automatically", `${d.autoMatchRate}%`],
+        ["Waiting in the review queue", String(d.attention.review)],
+        ["Cash and cheques not banked", d.attention.unbanked ? `${d.attention.unbanked} (${kes(d.attention.unbankedAmount)})` : "None"],
+        ["Families on payment plans", String(d.planCount)],
+      ],
+      button: { label: "Open the dashboard", href: `${origin}/app/` },
+      footer: "You get this because you’re a director on Shulife. Sent once a day.",
+    }),
+  );
+  return { summary: res.ok ? `sent to ${to.length}` : `not sent (${res.error})` };
+}
 
 /**
  * Reminder job — call every 15 minutes (or daily with REMINDER_WINDOW_MINUTES=1440) with
@@ -30,7 +58,7 @@ export async function GET(req: Request) {
   if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) return new NextResponse(null, { status: 401 });
   const origin = new URL(req.url).origin;
   return serial(async () => {
-    const s = getSchool();
+    const s = await school();
     const pool = getPool();
     const org = orgId();
     const sent = (g.__sentKeys ??= new Set());
@@ -50,6 +78,7 @@ export async function GET(req: Request) {
         );
       }
     }
-    return NextResponse.json({ due: due.length, ...result, mode: Object.keys(configured).length ? "live" : "dry run (no SMS/WhatsApp keys)" });
+    const summary = org ? await directorSummary(s, org, origin).catch((e) => ({ summary: `failed: ${(e as Error).message}` })) : { summary: "no database" };
+    return NextResponse.json({ due: due.length, ...result, ...summary, mode: Object.keys(configured).length ? "live" : "dry run (no SMS/WhatsApp keys)" });
   });
 }

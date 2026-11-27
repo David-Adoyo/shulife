@@ -1,14 +1,15 @@
 import "server-only";
+import { school } from "@/lib/db";
 import { cookies } from "next/headers";
 import { createHmac, timingSafeEqual } from "node:crypto";
-import { getSchool } from "@shulife/demo";
+
 import { redirect } from "next/navigation";
 import { supabaseConfigured, supabaseServer } from "./supabase";
 import { membershipFor } from "./supabase-admin";
 
 /** The demo class teacher teaches Grade 4 East at Ruiru (looked up, so it works with database ids too). */
-function teacherStreams() {
-  const s = getSchool();
+async function teacherStreams() {
+  const s = await school();
   const rui = s.campuses.find((c) => c.code === "RUI");
   return s.streams.filter((st) => st.campusId === rui?.id && st.gradeCode === "G4" && st.name === "East").map((st) => st.id);
 }
@@ -70,7 +71,7 @@ export async function getSession(): Promise<Session> {
     role,
     name: ROLES.find((r) => r.id === role)!.who,
     campusId: campus && campus !== "all" ? campus : null,
-    streamIds: role === "class_teacher" ? teacherStreams() : [],
+    streamIds: role === "class_teacher" ? await teacherStreams() : [],
   };
 }
 

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
+import { school } from "@/lib/db";
 import { formatDate, gradeName } from "@shulife/core";
-import { getSchool } from "@shulife/demo";
+
 import { Card, PageTitle } from "@/components/app/ui";
 import { InviteForm } from "@/components/app/invite-form";
 import { getSession, ROLES } from "@/lib/session";
@@ -15,7 +16,7 @@ const label = (r: string) => ROLES.find((x) => x.id === r)?.label ?? r.replace("
 export default async function Team() {
   const session = await getSession();
   if (session.role !== "director") redirect("/app/");
-  const s = getSchool();
+  const s = await school();
   const streams = s.streams.map((st) => ({ id: st.id, label: `${gradeName(st.gradeCode)} ${st.name} · ${s.campuses.find((c) => c.id === st.campusId)?.name.replace(/^.*, /, "")}` }));
   const sb = supabaseConfigured() ? supabaseAdmin() : null;
   const members = sb && session.orgId ? ((await sb.from("memberships").select("user_id, role, created_at").eq("org_id", session.orgId).is("archived_at", null)).data ?? []) : [];

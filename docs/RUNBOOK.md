@@ -38,6 +38,23 @@ Last run: 2,000 callbacks (200 repeats) in 12.3 s · p95 308 ms · 0 lost · 0 d
 
 Remove any other A/AAAA records on `@` and any old `www` record. Vercel issues the HTTPS certificate automatically once DNS resolves. Supabase Auth `site_url` is `https://shulife.co.ke`; redirect allow-list covers shulife.co.ke, www, shulife.vercel.app and localhost:3000.
 
+### Email (Resend)
+- Resend domain `shulife.co.ke` (id `017736f3-f27a-4eb9-9d13-c78cd7e07c13`, eu-west-1). Add these DNS records at the registrar (or in Vercel DNS if the domain uses Vercel's nameservers):
+
+| Type | Name | Value |
+|---|---|---|
+| TXT | `resend._domainkey` | the DKIM key shown in Resend → Domains → shulife.co.ke |
+| MX (priority 10) | `send` | `feedback-smtp.eu-west-1.amazonses.com` |
+| TXT | `send` | `v=spf1 include:amazonses.com ~all` |
+
+- The website sends with `RESEND_API_KEY` (a sending-only key for shulife.co.ke, already set in Vercel) from `noreply@shulife.co.ke`: demo-request alerts to Shulife admins, and a 07:00 summary to each school's directors (from the daily cron).
+- Supabase sign-in emails (invites, password resets) use Supabase's own sender until the domain is verified. Then run `node scripts/supabase-email.mjs tvlowbpfdsdlijbepxeu 017736f3-f27a-4eb9-9d13-c78cd7e07c13` to switch them to Resend SMTP with the templates in `supabase/templates/` (links valid 24 hours).
+
+### Database connection
+- The app keeps a copy of the school in memory on each server and checks `org_versions` (bumped once per write transaction by triggers, migration 0008) before every read, reloading when another server has written.
+- Writes take a per-school advisory lock (transaction-scoped, so it works through the Supabase transaction pooler on port 6543), refresh, apply and write. Two-server load test: 1,200 payments, none lost or duplicated.
+- `DATABASE_URL` = the transaction pooler string `postgresql://postgres.tvlowbpfdsdlijbepxeu:<password>@aws-1-eu-west-1.pooler.supabase.com:6543/postgres`, stored in Vercel as a sensitive variable.
+
 ## Supabase project (tvlowbpfdsdlijbepxeu, eu-west-1)
 Built on 26 Nov 2026 through the Management API:
 - **Migrations** `supabase/migrations/20261126000001…07` (also recorded in `supabase_migrations.schema_migrations`, so `supabase db push` stays in sync). Re-run with `NODE_USE_ENV_PROXY=1 SUPABASE_ACCESS_TOKEN=sbp_… node scripts/supabase-apply.mjs tvlowbpfdsdlijbepxeu` — already-applied files are skipped.

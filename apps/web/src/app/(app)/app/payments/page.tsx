@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
+import { school } from "@/lib/db";
 import { cashUp, formatDate, formatTime, isoDateNairobi } from "@shulife/core";
-import { currentTerm, getSchool } from "@shulife/demo";
+import { currentTerm } from "@shulife/demo";
 import { Card, KSh, Kpi, MatchBadge, PageTitle, Pill, SplitBar } from "@/components/app/ui";
 import { can, getSession } from "@/lib/session";
 
@@ -17,7 +18,7 @@ export default async function Payments({ searchParams }: { searchParams: Promise
   const session = await getSession();
   if (!can.seeMoney(session.role)) redirect("/app/clearance/");
   const { channel = "all" } = await searchParams;
-  const s = getSchool();
+  const s = await school();
   const term = currentTerm(s);
   const all = s.payments.filter((p) => p.termId === term.id && (!session.campusId || p.campusId === session.campusId));
   const list = all

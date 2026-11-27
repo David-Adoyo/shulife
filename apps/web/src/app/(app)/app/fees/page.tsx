@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
+import { school } from "@/lib/db";
 import { gradeName, formatKes } from "@shulife/core";
-import { feeMatrix, getSchool } from "@shulife/demo";
+import { feeMatrix } from "@shulife/demo";
 import { Card, KSh, PageTitle } from "@/components/app/ui";
 import { can, getSession } from "@/lib/session";
 
@@ -10,7 +11,7 @@ export default async function Fees({ searchParams }: { searchParams: Promise<{ t
   const session = await getSession();
   if (!can.seeMoney(session.role)) redirect("/app/clearance/");
   const { term: termId, col = "day" } = await searchParams;
-  const s = getSchool();
+  const s = await school();
   const term = s.terms.find((t) => t.id === termId) ?? s.terms.find((t) => t.status === "open")!;
   const m = feeMatrix(s, term.id);
   const column = col === "boarder" ? "boarder" : "day";

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { school } from "@/lib/db";
 import { notFound } from "next/navigation";
 import { formatDate, formatKes } from "@shulife/core";
-import { getSchool, parentView } from "@shulife/demo";
+import { parentView } from "@shulife/demo";
 import { Wordmark } from "@/components/brand";
 import { verifyParentToken } from "@/lib/session";
 
@@ -23,7 +24,7 @@ export default async function ParentPortal({ params, searchParams }: { params: P
   const { lang: langParam, paid } = await searchParams;
   const familyId = verifyParentToken(token);
   if (!familyId) notFound();
-  const s = getSchool();
+  const s = await school();
   const v = parentView(s, familyId);
   if (!v) notFound();
   const lang = langParam === "sw" || (langParam !== "en" && v.family.lang === "sw") ? "sw" : "en";

@@ -1,4 +1,5 @@
-import { dashboard, getSchool } from "@shulife/demo";
+import { dashboard } from "@shulife/demo";
+import { school } from "@/lib/db";
 import { mobileUser, unauthorised } from "@/lib/mobile-auth";
 
 export const dynamic = "force-dynamic";
@@ -6,7 +7,7 @@ export const dynamic = "force-dynamic";
 export async function GET(req: Request) {
   const user = await mobileUser(req);
   if (!user) return unauthorised();
-  const d = dashboard(getSchool());
+  const d = dashboard((await school()));
   return Response.json({
     user,
     term: d.term.name,

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
+import { school } from "@/lib/db";
 import { gradeName } from "@shulife/core";
-import { families, getSchool, termPosition } from "@shulife/demo";
+import { families, termPosition } from "@shulife/demo";
 import { Card, Empty, KSh, PageTitle, Pill, balancePill } from "@/components/app/ui";
 import { Icon } from "@/components/icons";
 import { can, getSession } from "@/lib/session";
@@ -18,7 +19,7 @@ export default async function Families({ searchParams }: { searchParams: Promise
   const session = await getSession();
   if (!can.seeMoney(session.role)) redirect("/app/clearance/");
   const { q = "", filter = "all", page = "1" } = await searchParams;
-  const s = getSchool();
+  const s = await school();
   const list = families(s, q, session.campusId, filter as (typeof FILTERS)[number][0]);
   const per = 30;
   const p = Math.max(1, Number(page));

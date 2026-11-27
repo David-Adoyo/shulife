@@ -1,5 +1,6 @@
 import { gradeName, isoDateNairobi, teacherView } from "@shulife/core";
-import { clearanceInput, getSchool } from "@shulife/demo";
+import { school } from "@/lib/db";
+import { clearanceInput } from "@shulife/demo";
 import { getSession } from "@/lib/session";
 import { clearancePdf } from "@/lib/pdf";
 
@@ -9,7 +10,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ stream: st
   const { stream } = await params;
   const session = await getSession();
   if (session.role === "class_teacher" && !session.streamIds.includes(stream)) return new Response("Forbidden", { status: 403 });
-  const s = getSchool();
+  const s = await school();
   const st = s.streams.find((x) => x.id === stream);
   if (!st) return new Response("Not found", { status: 404 });
   const event = s.events.find((e) => e.kind === "exam")!;

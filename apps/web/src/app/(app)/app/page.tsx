@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
+import { school } from "@/lib/db";
 import { formatDate, formatKesShort, formatTime } from "@shulife/core";
-import { dashboard, getSchool } from "@shulife/demo";
+import { dashboard } from "@shulife/demo";
 import { Card, CollectionRing, KSh, Kpi, MatchBadge, PageTitle, heatClass } from "@/components/app/ui";
 import { Ripple } from "@/components/brand";
 import { Icon } from "@/components/icons";
@@ -11,7 +12,7 @@ export const metadata = { title: "Dashboard" };
 export default async function Dashboard() {
   const session = await getSession();
   if (!can.seeMoney(session.role)) redirect("/app/clearance/");
-  const s = getSchool();
+  const s = await school();
   const d = dashboard(s, session.campusId);
   const maxDay = Math.max(1, ...d.projection.days.map((x) => x.high));
 

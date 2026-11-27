@@ -1,13 +1,13 @@
-import { getSchool, resolveReview, reviewQueue } from "@shulife/demo";
+import { resolveReview, reviewQueue } from "@shulife/demo";
 import { persistResolution } from "@shulife/db";
 import { mobileUser, unauthorised } from "@/lib/mobile-auth";
-import { serial, withDb } from "@/lib/db";
+import { withDb, school, writeStep } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   if (!(await mobileUser(req))) return unauthorised();
-  const s = getSchool();
+  const s = await school();
   return Response.json(
     reviewQueue(s).slice(0, 30).map((p) => ({
       id: p.id,
@@ -25,8 +25,7 @@ export async function POST(req: Request) {
   if (!user) return unauthorised();
   const { paymentId, familyId, notOurs } = (await req.json()) as { paymentId: string; familyId?: string; notOurs?: boolean };
   try {
-    const result = await serial(async () => {
-      const s = getSchool();
+    const result = await writeStep(async (s) => {
       const n = s.ledger.length;
       const p = resolveReview(s, paymentId, notOurs ? { notOurs: true } : { familyId: familyId! });
       const entries = s.ledger.slice(n);

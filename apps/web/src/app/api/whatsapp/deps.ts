@@ -1,11 +1,12 @@
 import { createRateLimiter, handleInbound, hashMsisdn, normalizeMsisdn } from "@shulife/core";
-import { familyBalance, getSchool, termPosition } from "@shulife/demo";
+import { school } from "@/lib/db";
+import { familyBalance, termPosition } from "@shulife/demo";
 import { signParentToken } from "@/lib/session";
 
 export { createRateLimiter, handleInbound, hashMsisdn, normalizeMsisdn };
 
-export function familyBalanceSafe() {
-  const s = getSchool();
+export async function familyBalanceSafe() {
+  const s = await school();
   const term = s.terms.find((t) => t.status === "open")!;
   return {
     school: { name: s.org.name, officePhone: s.org.officePhone, term: term.name },

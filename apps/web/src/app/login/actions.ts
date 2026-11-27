@@ -50,3 +50,17 @@ export async function setPassword(formData: FormData) {
   // Directors, heads and bursars set up their authenticator next; the app enforces it.
   redirect("/login/mfa/?enrol=1");
 }
+
+/** "Forgot your password?" Always says the email was sent, so it never reveals who has an account. */
+export async function requestReset(formData: FormData) {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  if (email.includes("@")) {
+    const { headers } = await import("next/headers");
+    const h = await headers();
+    const origin = `${h.get("x-forwarded-proto") ?? "https"}://${h.get("x-forwarded-host") ?? h.get("host")}`;
+    const sb = await supabaseServer();
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: `${origin}/login/set-password/` });
+    if (error) console.error("password reset request failed", error.message);
+  }
+  redirect("/login/reset/?sent=1");
+}
