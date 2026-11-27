@@ -7,7 +7,7 @@ import { campusForCallback, demoOrgId, getPool, reloadFromDb, serial, UUID_RE, w
 
 /**
  * Safaricom Daraja C2B callbacks (§7.2): /api/webhooks/mpesa/{campus}/{secret}/{validation|confirmation}
- * - The secret path is per campus (stored in payment_integrations.callback_secret).
+ * - Real schools register /api/webhooks/c2b/{campus id}/{secret}/{kind}/ (Daraja rejects URLs containing "mpesa"); the secret is payment_integrations.callback_secret.
  * - Validation accepts all payments; never reject a parent's money.
  * - Confirmation stores the raw event first, dedupes on TransID and always returns 200 fast.
  *   Production enqueues to pgmq; the demo processes inline.

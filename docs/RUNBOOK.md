@@ -86,7 +86,7 @@ Built on 26 Nov 2026 through the Management API:
    3. Fees (tuition, activity, exam, lunch and boarding per grade; transport routes; how family payments are split; clearance %)
    4. Learners and families (paste or upload the class list; learners sharing a parent's phone become one family; opening balances, lunch and routes are read if present)
    5. Invoice the term (safe to run again; opening balances become "Balance brought forward", credits stay on the family; the term's fee structure is then locked)
-   6. Connect M-Pesa and go live (shows each campus's own callback URLs to register with Safaricom, and the note for parents)
+   6. Connect M-Pesa and go live (shows each campus’s own callback URLs, under /api/webhooks/c2b/ with a trailing slash because Daraja rejects URLs containing "mpesa", and the note for parents)
 3. Register the confirmation and validation URLs from step 6 on the school's Paybill (Daraja C2B register URL).
 
 How it works: each school's data is separate (`org_id` on every row). Each server keeps a copy per school and checks `org_versions` before reading. Callbacks find their school from the campus id and secret in the URL; parent links from the family; receipt checks from the receipt code; WhatsApp from the sender's registered number. The daily job runs reminders and the director summary for every live school and never for the demo.

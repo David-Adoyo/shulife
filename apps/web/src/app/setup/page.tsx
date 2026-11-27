@@ -199,8 +199,8 @@ export default async function Setup({ searchParams }: { searchParams: Promise<Re
               <p className="font-semibold text-navy-900">{r.name} · Paybill {r.shortcode ?? "not set"}</p>
               {r.callback_secret ? (
                 <dl className="mt-2 space-y-2 break-all font-mono text-xs text-ink-600">
-                  <div><dt className="font-sans font-semibold text-navy-900">Confirmation URL</dt><dd>{origin}/api/webhooks/mpesa/{r.campus_id}/{r.callback_secret}/confirmation</dd></div>
-                  <div><dt className="font-sans font-semibold text-navy-900">Validation URL</dt><dd>{origin}/api/webhooks/mpesa/{r.campus_id}/{r.callback_secret}/validation</dd></div>
+                  <div><dt className="font-sans font-semibold text-navy-900">Confirmation URL</dt><dd>{origin}/api/webhooks/c2b/{r.campus_id}/{r.callback_secret}/confirmation/</dd></div>
+                  <div><dt className="font-sans font-semibold text-navy-900">Validation URL</dt><dd>{origin}/api/webhooks/c2b/{r.campus_id}/{r.callback_secret}/validation/</dd></div>
                 </dl>
               ) : (
                 <p className="mt-1 text-ink-600">Add this campus’s Paybill number in step 1.</p>
