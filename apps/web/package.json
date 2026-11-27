@@ -8,7 +8,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "@fontsource-variable/fraunces": "5.2.8",
     "@fontsource-variable/plus-jakarta-sans": "5.2.8",
     "@react-pdf/renderer": "^4.3.0",
     "@shulife/core": "*",
