@@ -16,6 +16,15 @@ export async function setRole(formData: FormData) {
   redirect(role === "class_teacher" ? "/app/clearance/" : "/app/");
 }
 
+/** Switch between the schools a staff member belongs to (checked again on every request). */
+export async function setSchoolAction(formData: FormData) {
+  const c = await cookies();
+  c.set("shulife_org", String(formData.get("org") ?? ""), { path: "/", sameSite: "lax", httpOnly: true, secure: true, maxAge: 60 * 60 * 24 * 365 });
+  c.delete("demo_campus");
+  revalidatePath("/", "layout");
+  redirect("/app/");
+}
+
 export async function setCampus(formData: FormData) {
   (await cookies()).set("demo_campus", String(formData.get("campus") ?? "all"), { path: "/", sameSite: "lax" });
   revalidatePath("/app", "layout");

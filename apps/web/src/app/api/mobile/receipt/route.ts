@@ -15,7 +15,7 @@ export async function POST(req: Request) {
   if (!user) return unauthorised();
   const b = (await req.json()) as { clientId: string; familyCode: string; amount: string; channel: "cash" | "cheque" | "bank_slip"; bookRef: string; photo?: string; capturedAt?: string };
   if (!b.clientId || !b.bookRef || !b.photo) return Response.json({ error: "Amount, receipt-book number and a photo are required" }, { status: 400 });
-  const known = (await school()).families.some((f) => f.code.toUpperCase() === b.familyCode.trim().toUpperCase());
+  const known = (await school(user.orgId)).families.some((f) => f.code.toUpperCase() === b.familyCode.trim().toUpperCase());
   if (!known) return Response.json({ error: `No family with code ${b.familyCode}` }, { status: 404 });
   const result = await writeStep(async (s) => {
     const fam = s.families.find((f) => f.code.toUpperCase() === b.familyCode.trim().toUpperCase())!;

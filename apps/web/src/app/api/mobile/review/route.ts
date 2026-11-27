@@ -6,8 +6,9 @@ import { withDb, school, writeStep } from "@/lib/db";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
-  if (!(await mobileUser(req))) return unauthorised();
-  const s = await school();
+  const user = await mobileUser(req);
+  if (!user) return unauthorised();
+  const s = await school(user.orgId);
   return Response.json(
     reviewQueue(s).slice(0, 30).map((p) => ({
       id: p.id,
@@ -31,7 +32,7 @@ export async function POST(req: Request) {
       const entries = s.ledger.slice(n);
       await withDb((c) => persistResolution(c, s, p, entries));
       return { receipt: p.receiptNo, split: p.split };
-    });
+    }, user.orgId);
     return Response.json(result);
   } catch (e) {
     return Response.json({ error: (e as Error).message }, { status: 409 });

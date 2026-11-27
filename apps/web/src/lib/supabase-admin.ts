@@ -16,13 +16,24 @@ export function supabaseAdmin(): SupabaseClient | null {
 }
 
 const ORDER = ["director", "head", "bursar", "front_office", "class_teacher", "transport"];
-/** The user's highest-ranking school membership (sponsors excluded). */
-export async function membershipFor(userId: string) {
+/** All of a user's school memberships (sponsors excluded), highest role first. */
+export async function membershipsFor(userId: string) {
   const sb = supabaseAdmin();
   if (!sb) throw new Error("SUPABASE_SECRET_KEY is required with Supabase Auth");
-  const { data, error } = await sb.from("memberships").select("org_id, role, campus_ids, stream_ids").eq("user_id", userId).is("archived_at", null).neq("role", "sponsor");
+  const { data, error } = await sb.from("memberships").select("org_id, role, campus_ids, stream_ids, organisations(name)").eq("user_id", userId).is("archived_at", null).neq("role", "sponsor");
   if (error) throw error;
-  return (data ?? []).sort((a, b) => ORDER.indexOf(a.role) - ORDER.indexOf(b.role))[0] ?? null;
+  return (data ?? [])
+    .map((m) => ({ ...m, orgName: ((m.organisations as unknown as { name: string } | null)?.name ?? "School") as string }))
+    .sort((a, b) => ORDER.indexOf(a.role) - ORDER.indexOf(b.role));
+}
+
+/**
+ * The membership to use: in the school the user last chose (the shulife_org cookie) if
+ * they belong to it, otherwise their highest-ranking one.
+ */
+export async function membershipFor(userId: string, preferredOrg?: string | null) {
+  const all = await membershipsFor(userId);
+  return (preferredOrg && all.find((m) => m.org_id === preferredOrg)) || all[0] || null;
 }
 
 export async function isShulifeAdmin(userId: string) {

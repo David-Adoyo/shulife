@@ -50,7 +50,7 @@ export async function saveSchool(db: Db, s: School): Promise<string> {
   const term = (key: string) => s.terms.find((t) => t.key === key)!;
   await db.query("begin");
   try {
-    await db.query(`insert into organisations (id, name, allocation_rule, clearance_pct, quiet_start, quiet_end, max_reminders_per_week, family_code_prefix) values ($1,$2,$3,$4,$5,$6,$7,$8)`, [org, s.org.name, s.org.allocationRule, s.org.clearancePct, s.org.quietStart, s.org.quietEnd, s.org.maxPerWeek, s.org.familyPrefix]);
+    await db.query(`insert into organisations (id, name, allocation_rule, clearance_pct, quiet_start, quiet_end, max_reminders_per_week, family_code_prefix, is_demo) values ($1,$2,$3,$4,$5,$6,$7,$8,$9)`, [org, s.org.name, s.org.allocationRule, s.org.clearancePct, s.org.quietStart, s.org.quietEnd, s.org.maxPerWeek, s.org.familyPrefix, s.org.isDemo ?? false]);
     await insertMany(db, "campuses", ["id", "org_id", "name", "code", "phone", "paybill_display"], s.campuses.map((c) => [uid("campus", c.id), org, c.name, c.code, s.org.officePhone, c.paybill]));
     const years = [...new Set(s.terms.map((t) => t.year))];
     await insertMany(db, "academic_years", ["id", "org_id", "name", "starts_on", "ends_on"], years.map((y) => [uid("year", String(y)), org, String(y), `${y}-01-01`, `${y}-12-31`]));
@@ -258,7 +258,7 @@ export async function loadSchool(db: Db, orgId: string, opts: { today: string })
   for (const a of allocs) allocByPayment.set(a.payment_id, [...(allocByPayment.get(a.payment_id) ?? []), a]);
   const receiptSeq: Record<string, number> = {};
   const school: School = {
-    org: { id: org.id, name: org.name, allocationRule: org.allocation_rule, clearancePct: org.clearance_pct, quietStart: String(org.quiet_start).slice(0, 5), quietEnd: String(org.quiet_end).slice(0, 5), maxPerWeek: org.max_reminders_per_week, officePhone: campuses[0]?.phone ?? "", familyPrefix: org.family_code_prefix },
+    org: { id: org.id, name: org.name, allocationRule: org.allocation_rule, clearancePct: org.clearance_pct, quietStart: String(org.quiet_start).slice(0, 5), quietEnd: String(org.quiet_end).slice(0, 5), maxPerWeek: org.max_reminders_per_week, officePhone: campuses[0]?.phone ?? "", familyPrefix: org.family_code_prefix, isDemo: org.is_demo ?? false, county: campuses[0]?.county ?? "", setup: org.setup ?? {}, liveAt: org.live_at ? new Date(org.live_at).toISOString() : null },
     today: opts.today,
     campuses: campuses.map((c) => ({ id: c.id, name: c.name, code: c.code, paybill: c.paybill_display ?? "" })),
     grades: grades.map((g) => g.code),
@@ -300,6 +300,6 @@ export async function loadSchool(db: Db, orgId: string, opts: { today: string })
     receiptSeq,
     sponsor: sponsor ? { id: sponsor.id, name: sponsor.name } : { id: "", name: "" },
   };
-  seedCommunication(school);
+  if (school.org.isDemo) seedCommunication(school); // fictional notices and events for the demo only
   return school;
 }

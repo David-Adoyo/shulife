@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { dashboard, dispatch, dueMessages, type OutboxMessage, type Sender, type School } from "@shulife/demo";
 import { createSms, createWhatsApp } from "@shulife/integrations";
-import { getPool, orgId, serial, school } from "@/lib/db";
+import { allOrgIds, getPool, serial, school } from "@/lib/db";
 import { signParentToken } from "@/lib/session";
 import { compose, directorEmails, sendEmail } from "@/lib/email";
 
@@ -57,10 +57,24 @@ export async function GET(req: Request) {
   const secret = process.env.CRON_SECRET;
   if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) return new NextResponse(null, { status: 401 });
   const origin = new URL(req.url).origin;
+  if (!getPool()) return NextResponse.json({ schools: [await runFor(await school(), null, origin)] });
+  const results = [];
+  for (const org of await allOrgIds()) {
+    try {
+      const s = await school(org);
+      // The demo's families are fictional: never message them. Schools still setting up are skipped too.
+      if (s.org.isDemo || !s.terms.some((t) => t.status === "open")) continue;
+      results.push(await runFor(s, org, origin));
+    } catch (e) {
+      results.push({ school: org, error: (e as Error).message });
+    }
+  }
+  return NextResponse.json({ schools: results });
+}
+
+async function runFor(s: School, org: string | null, origin: string) {
   return serial(async () => {
-    const s = await school();
     const pool = getPool();
-    const org = orgId();
     const sent = (g.__sentKeys ??= new Set());
     if (pool && org) for (const r of (await pool.query(`select idempotency_key from messages_outbox where org_id = $1`, [org])).rows) sent.add(r.idempotency_key);
     const now = process.env.SHULIFE_TODAY === "now" || !process.env.SHULIFE_JOB_AT ? new Date() : new Date(process.env.SHULIFE_JOB_AT);
@@ -79,6 +93,6 @@ export async function GET(req: Request) {
       }
     }
     const summary = org ? await directorSummary(s, org, origin).catch((e) => ({ summary: `failed: ${(e as Error).message}` })) : { summary: "no database" };
-    return NextResponse.json({ due: due.length, ...result, ...summary, mode: Object.keys(configured).length ? "live" : "dry run (no SMS/WhatsApp keys)" });
+    return { school: s.org.name, due: due.length, ...result, ...summary, mode: Object.keys(configured).length ? "live" : "dry run (no SMS/WhatsApp keys)" };
   });
 }

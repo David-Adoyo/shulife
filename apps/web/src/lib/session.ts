@@ -5,7 +5,7 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 
 import { redirect } from "next/navigation";
 import { supabaseConfigured, supabaseServer } from "./supabase";
-import { membershipFor } from "./supabase-admin";
+import { membershipsFor } from "./supabase-admin";
 
 /** The demo class teacher teaches Grade 4 East at Ruiru (looked up, so it works with database ids too). */
 async function teacherStreams() {
@@ -29,7 +29,7 @@ export const ROLES: { id: Role; label: string; who: string }[] = [
   { id: "class_teacher", label: "Class teacher", who: "Joseph Otieno · Grade 4 East" },
 ];
 
-export type Session = { role: Role; name: string; campusId: string | null; streamIds: string[]; userId?: string; orgId?: string };
+export type Session = { role: Role; name: string; campusId: string | null; streamIds: string[]; userId?: string; orgId?: string; schools?: { id: string; name: string }[] };
 
 const MFA_ROLES: Role[] = ["director", "head", "bursar"];
 
@@ -41,7 +41,9 @@ async function supabaseSession(): Promise<Session> {
   const sb = await supabaseServer();
   const { data } = await sb.auth.getUser();
   if (!data.user) redirect("/login/");
-  const m = await membershipFor(data.user.id);
+  const all = await membershipsFor(data.user.id);
+  const preferred = (await cookies()).get("shulife_org")?.value;
+  const m = all.find((x) => x.org_id === preferred) ?? all[0];
   if (!m) redirect("/login/?error=no-access");
   const rows = [m];
   const role = rows[0].role as Role;
@@ -59,6 +61,7 @@ async function supabaseSession(): Promise<Session> {
     streamIds: rows[0].stream_ids ?? [],
     userId: data.user.id,
     orgId: rows[0].org_id,
+    schools: [...new Map(all.map((x) => [x.org_id as string, { id: x.org_id as string, name: x.orgName }])).values()],
   };
 }
 

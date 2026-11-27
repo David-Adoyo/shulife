@@ -11,7 +11,7 @@ import type { Role } from "./session";
  * The mobile app serves directors and bursars only (§17 Stage 12).
  */
 const SECRET = process.env.PARENT_TOKEN_SECRET ?? "demo-only-secret-change-me";
-export type MobileUser = { role: Role; name: string };
+export type MobileUser = { role: Role; name: string; orgId?: string | null };
 
 export function signStaffToken(u: MobileUser, ttlDays = 7) {
   const body = Buffer.from(JSON.stringify({ ...u, exp: Date.now() + ttlDays * 86_400_000 })).toString("base64url");
@@ -26,7 +26,7 @@ export async function mobileUser(req: Request): Promise<MobileUser | null> {
     const { data } = await sb.auth.getUser(token);
     if (!data.user) return null;
     const m = await membershipFor(data.user.id);
-    return m && (m.role === "director" || m.role === "bursar") ? { role: m.role, name: data.user.email ?? "Staff" } : null;
+    return m && (m.role === "director" || m.role === "bursar") ? { role: m.role, name: data.user.email ?? "Staff", orgId: m.org_id as string } : null;
   }
   const [body, sig] = token.split(".");
   if (!body || !sig) return null;

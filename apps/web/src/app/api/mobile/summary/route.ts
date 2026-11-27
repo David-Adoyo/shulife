@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export async function GET(req: Request) {
   const user = await mobileUser(req);
   if (!user) return unauthorised();
-  const d = dashboard((await school()));
+  const d = dashboard((await school(user.orgId)));
   return Response.json({
     user,
     term: d.term.name,

@@ -21,7 +21,8 @@ export async function POST(req: Request) {
   const from = normalizeMsisdn(msg?.from ?? body.from ?? "");
   const text = msg?.text?.body ?? body.text ?? "";
   if (!from) return NextResponse.json({ error: "invalid sender" }, { status: 400 });
-  const { school: schoolInfo, families } = await familyBalanceSafe();
-  const reply = handleInbound({ senderPhoneHash: hashMsisdn(from, "demo-salt"), text, school: schoolInfo, families, rateLimiter: limiter });
+  const senderPhoneHash = hashMsisdn(from, "demo-salt");
+  const { school: schoolInfo, families } = await familyBalanceSafe(senderPhoneHash);
+  const reply = handleInbound({ senderPhoneHash, text, school: schoolInfo, families, rateLimiter: limiter });
   return NextResponse.json({ to: from, reply });
 }

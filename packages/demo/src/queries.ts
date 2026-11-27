@@ -4,7 +4,9 @@ import type { Payment, School } from "./types";
 
 /* Read models for the school app, parent portal and admin console. */
 
-export const currentTerm = (s: School) => s.terms.find((t) => t.status === "open")!;
+/** The open term. A school still in setup has none: a placeholder keeps pages from crashing while they redirect. */
+export const currentTerm = (s: School): School["terms"][number] =>
+  s.terms.find((t) => t.status === "open") ?? s.terms.at(-1) ?? { id: "none", key: "0-0", name: "No term yet", number: 1, year: new Date().getFullYear(), opening: s.today.slice(0, 10), closing: s.today.slice(0, 10), due: s.today.slice(0, 10), status: "open" };
 const inCampus = (s: School, campusId?: string | null) => (l: { campusId: string }) => !campusId || l.campusId === campusId;
 
 /** Billed and collected for this term per learner (allocations against this term's lines). */
@@ -64,14 +66,17 @@ export function dashboard(s: School, campusId?: string | null) {
   const onPlans = plans.reduce((sum, p) => sum + p.instalments.reduce((a, i) => a + (i.amount - i.paid), 0), 0);
 
   // Projection from last term's payment curve.
-  const prev = s.terms.find((t) => t.status === "closed")!;
-  const prevOpen = Date.parse(prev.opening);
+  // A new school has no closed term yet: the projection then uses plans and the default curve only.
+  const prev = s.terms.find((t) => t.status === "closed");
   const weeks: number[] = Array(10).fill(0);
   let prevBilled = 0;
-  for (const l of s.lines.values()) if (l.termKey === prev.key) prevBilled += l.amount;
-  for (const p of s.payments.filter((x) => x.termId === prev.id && x.familyId)) {
-    const w = Math.max(0, Math.floor((Date.parse(p.paidAt) - prevOpen) / (7 * 86_400_000)));
-    if (w < weeks.length) weeks[w] += p.amount;
+  if (prev) {
+    const prevOpen = Date.parse(prev.opening);
+    for (const l of s.lines.values()) if (l.termKey === prev.key) prevBilled += l.amount;
+    for (const p of s.payments.filter((x) => x.termId === prev.id && x.familyId)) {
+      const w = Math.max(0, Math.floor((Date.parse(p.paidAt) - prevOpen) / (7 * 86_400_000)));
+      if (w < weeks.length) weeks[w] += p.amount;
+    }
   }
   const projection = projectCash({
     asOf: todayIso,
@@ -80,7 +85,7 @@ export function dashboard(s: School, campusId?: string | null) {
     outstanding: Math.max(0, outstanding - onPlans),
     instalments: plans.flatMap((p) => p.instalments.filter((i) => i.paid < i.amount).map((i) => ({ dueDate: i.dueDate, amount: i.amount - i.paid }))),
     ratiba: [],
-    history: [{ billed: prevBilled, collectedByWeek: weeks }],
+    history: prev ? [{ billed: prevBilled, collectedByWeek: weeks }] : [],
   });
 
   const queue = reviewQueue(s).filter((p) => !campusId || p.campusId === campusId);
@@ -103,7 +108,7 @@ export function dashboard(s: School, campusId?: string | null) {
       review: queue.length,
       unbanked: unbanked.length,
       unbankedAmount: unbanked.reduce((a, p) => a + p.amount, 0),
-      changeRequests: 2,
+      changeRequests: s.org.isDemo ? 2 : 0, // allocation change requests aren't stored yet; the demo shows two
       unreadMessages: s.inbox.filter((i) => i.status === "open").length,
       nextEvent: s.events.find((e) => e.date >= todayIso) ?? null,
     },
@@ -196,9 +201,9 @@ export function familyDetail(s: School, familyId: string) {
 }
 
 export function feeMatrix(s: School, termId = currentTerm(s).id) {
-  const rows = s.structures[termId];
-  const prevId = s.terms.find((t) => t.status === "closed")!.id;
-  const diff = termId === prevId ? [] : diffStructures({ id: "a", termId: prevId, status: "published", rows: s.structures[prevId] }, { id: "b", termId, status: "published", rows });
+  const rows = s.structures[termId] ?? [];
+  const prevId = s.terms.find((t) => t.status === "closed")?.id;
+  const diff = !prevId || termId === prevId ? [] : diffStructures({ id: "a", termId: prevId, status: "published", rows: s.structures[prevId] ?? [] }, { id: "b", termId, status: "published", rows });
   return {
     items: s.feeItems.filter((f) => f.code !== "transport"),
     grades: s.grades,

@@ -38,7 +38,7 @@ export function parseCsv(text: string): string[][] {
   return rows;
 }
 
-export type Field = "admission" | "firstName" | "lastName" | "otherNames" | "grade" | "stream" | "boarding" | "guardianName" | "guardianPhone" | "guardian2Name" | "guardian2Phone" | "email" | "route" | "openingBalance";
+export type Field = "admission" | "firstName" | "lastName" | "otherNames" | "grade" | "stream" | "boarding" | "guardianName" | "guardianPhone" | "guardian2Name" | "guardian2Phone" | "email" | "route" | "openingBalance" | "lunch";
 
 const ALIASES: Record<Field, string[]> = {
   admission: ["admission", "admission no", "admission number", "adm", "adm no", "adm no.", "admno", "reg no", "upi"],
@@ -55,6 +55,7 @@ const ALIASES: Record<Field, string[]> = {
   email: ["email", "parent email", "e-mail"],
   route: ["route", "transport route", "bus route"],
   openingBalance: ["balance", "opening balance", "balance b/f", "bal b/f", "arrears"],
+  lunch: ["lunch", "takes lunch", "meals"],
 };
 
 export function mapColumns(header: string[]): Partial<Record<Field, number>> {
@@ -90,6 +91,7 @@ export type ImportRow = {
   email: string;
   route: string;
   openingBalance: number | null; // cents
+  lunch: boolean;
 };
 
 export type ImportIssue = { row: number; field: Field | "row"; message: string; severity: "error" | "warning" };
@@ -132,7 +134,7 @@ export function validateImport(rows: string[][], map: Partial<Record<Field, numb
     issues.push(...errs);
     if (adm) seen.set(adm, rowNo);
     if (errs.some((e) => e.severity === "error")) return;
-    good.push({ row: rowNo, admission: adm, firstName: first, lastName: last, otherNames: get(r, "otherNames"), gradeCode: grade!, stream: get(r, "stream"), boarding: b.startsWith("b") ? "boarder" : "day", guardians, email: get(r, "email"), route: get(r, "route"), openingBalance });
+    good.push({ row: rowNo, admission: adm, firstName: first, lastName: last, otherNames: get(r, "otherNames"), gradeCode: grade!, stream: get(r, "stream"), boarding: b.startsWith("b") ? "boarder" : "day", guardians, email: get(r, "email"), route: get(r, "route"), openingBalance, lunch: /^(y|yes|true|1|ndiyo)$/i.test(get(r, "lunch")) });
   });
   return { rows: good, issues };
 }

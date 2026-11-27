@@ -4,6 +4,7 @@ import { ImportTool } from "@/components/app/import-tool";
 import { Icon } from "@/components/icons";
 import { can, getSession } from "@/lib/session";
 import { resetDemo } from "../../actions";
+import { school } from "@/lib/db";
 
 export const metadata = { title: "Set-up" };
 
@@ -22,6 +23,7 @@ const STEPS = [
 export default async function Onboarding() {
   const session = await getSession();
   if (!can.settings(session.role)) redirect("/app/");
+  if (!(await school(session.orgId)).org.isDemo) redirect("/setup/"); // real schools use the saved setup
   const done = STEPS.filter((s) => s[2]).length;
   return (
     <>

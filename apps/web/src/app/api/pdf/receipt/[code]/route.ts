@@ -1,5 +1,5 @@
 import { familyBalance } from "@shulife/demo";
-import { school } from "@/lib/db";
+import { schoolForReceipt } from "@/lib/db";
 import { receiptPdf } from "@/lib/pdf";
 
 export const dynamic = "force-dynamic";
@@ -7,7 +7,8 @@ export const dynamic = "force-dynamic";
 /** Receipt PDF, reached from the parent's message or portal by its unguessable verify code. */
 export async function GET(req: Request, { params }: { params: Promise<{ code: string }> }) {
   const { code } = await params;
-  const s = await school();
+  const s = await schoolForReceipt((await params).code);
+  if (!s) return new Response("Not found", { status: 404 });
   const p = s.payments.find((x) => x.verifyCode === code && x.receiptNo);
   if (!p) return new Response("Not found", { status: 404 });
   const fam = s.families.find((f) => f.id === p.familyId)!;

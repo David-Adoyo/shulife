@@ -148,7 +148,7 @@ export function createSchool(seed = 2027): School {
   twinB.lastName = twinA.lastName;
 
   const school: School = {
-    org: { id: "org-mlima", name: "Mlima Academy", allocationRule: "oldest_balance", clearancePct: 70, quietStart: "21:00", quietEnd: "07:00", maxPerWeek: 2, officePhone: "0700 000 000", familyPrefix: "FAM" },
+    org: { id: "org-mlima", name: "Mlima Academy", allocationRule: "oldest_balance", clearancePct: 70, quietStart: "21:00", quietEnd: "07:00", maxPerWeek: 2, officePhone: "0700 000 000", familyPrefix: "FAM", isDemo: true },
     today: DEMO_TODAY,
     campuses,
     grades: GRADES,

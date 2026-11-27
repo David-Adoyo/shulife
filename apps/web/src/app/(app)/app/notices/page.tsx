@@ -21,7 +21,7 @@ export default async function Notices() {
       <NoticeComposer
         school={s.org.name}
         grades={teacher ? [] : s.grades.map((g) => ({ value: g, label: gradeName(g) }))}
-        streams={streams.map((st) => ({ value: st.id, label: `${gradeName(st.gradeCode)} ${st.name} · ${st.campusId === "c-rui" ? "Ruiru" : "Syokimau"}` }))}
+        streams={streams.map((st) => ({ value: st.id, label: `${gradeName(st.gradeCode)} ${st.name}${s.campuses.length > 1 ? ` · ${s.campuses.find((c) => c.id === st.campusId)?.name ?? ""}` : ""}` }))}
         routes={teacher ? [] : s.routes.map((r) => ({ value: r.id, label: r.name }))}
       />
 

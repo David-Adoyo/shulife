@@ -78,6 +78,19 @@ Built on 26 Nov 2026 through the Management API:
 2. Fill `.env.local` from `.env.example`.
 3. Replace the demo data source (`@shulife/demo`) with a Supabase-backed one implementing the same read models. Server routes use the service role only after verifying the session or a signed parent token.
 
+## Adding a real school
+1. Sign in as a Shulife admin and open `/admin/`. Under **Add a school**, enter the school's name and the director's email. This creates the school and emails the director an invitation (if they already have an account, they get access straight away and can switch schools in the app's sidebar).
+2. The director sets a password, sets up two-step sign-in and lands on `/setup/`, which saves each step to the database:
+   1. School and campuses (name, county, phone, family-code prefix; each campus's 3–4 letter code and Paybill number)
+   2. Classes and term (grades, streams, the current term's dates)
+   3. Fees (tuition, activity, exam, lunch and boarding per grade; transport routes; how family payments are split; clearance %)
+   4. Learners and families (paste or upload the class list; learners sharing a parent's phone become one family; opening balances, lunch and routes are read if present)
+   5. Invoice the term (safe to run again; opening balances become "Balance brought forward", credits stay on the family; the term's fee structure is then locked)
+   6. Connect M-Pesa and go live (shows each campus's own callback URLs to register with Safaricom, and the note for parents)
+3. Register the confirmation and validation URLs from step 6 on the school's Paybill (Daraja C2B register URL).
+
+How it works: each school's data is separate (`org_id` on every row). Each server keeps a copy per school and checks `org_versions` before reading. Callbacks find their school from the campus id and secret in the URL; parent links from the family; receipt checks from the receipt code; WhatsApp from the sender's registered number. The daily job runs reminders and the director summary for every live school and never for the demo.
+
 ## Connecting a school's M-Pesa (per campus)
 1. School enters Daraja consumer key/secret, shortcode and STK passkey → stored in Vault, never shown again.
 2. Create a `payment_integrations` row; its `callback_secret` forms the path `/api/webhooks/mpesa/{campus}/{secret}/{validation|confirmation}`.

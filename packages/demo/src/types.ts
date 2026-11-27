@@ -65,7 +65,7 @@ export type SchoolEvent = { id: string; name: string; kind: "exam" | "trip"; dat
 export type InboxThread = { id: string; familyId: string; tag: "fees" | "transport" | "general"; subject: string; lastMessage: string; at: string; status: "open" | "closed" };
 
 export type School = {
-  org: { id: string; name: string; allocationRule: AllocationRule; clearancePct: number; quietStart: string; quietEnd: string; maxPerWeek: number; officePhone: string; familyPrefix: string };
+  org: { id: string; name: string; allocationRule: AllocationRule; clearancePct: number; quietStart: string; quietEnd: string; maxPerWeek: number; officePhone: string; familyPrefix: string; isDemo?: boolean; county?: string; setup?: Record<string, boolean>; liveAt?: string | null };
   today: string; // ISO instant "now" for the demo
   campuses: Campus[];
   grades: string[];

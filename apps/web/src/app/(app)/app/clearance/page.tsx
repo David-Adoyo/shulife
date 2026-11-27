@@ -16,7 +16,7 @@ const COLUMNS = [
 export default async function Clearance({ searchParams }: { searchParams: Promise<{ stream?: string }> }) {
   const session = await getSession();
   const s = await school();
-  const event = s.events.find((e) => e.kind === "exam")!;
+  const event = s.events.find((e) => e.kind === "exam") ?? null;
   const teacher = session.role === "class_teacher";
   const streams = teacher ? s.streams.filter((st) => session.streamIds.includes(st.id)) : s.streams.filter((st) => !session.campusId || st.campusId === session.campusId);
   const { stream } = await searchParams;
@@ -27,7 +27,7 @@ export default async function Clearance({ searchParams }: { searchParams: Promis
 
   return (
     <>
-      <PageTitle title="Clearance" sub={`${event.name} · ${formatDate(new Date(event.date))} · cleared at ${s.org.clearancePct}% paid, or on a plan in good standing`} />
+      <PageTitle title="Clearance" sub={`${event ? `${event.name} · ${formatDate(new Date(event.date))} · ` : ""}cleared at ${s.org.clearancePct}% paid, or on a plan in good standing`} />
       {!teacher && (
         <form className="mb-5 flex flex-wrap items-center gap-2">
           <label htmlFor="stream" className="text-sm font-semibold text-navy-900">
@@ -36,7 +36,7 @@ export default async function Clearance({ searchParams }: { searchParams: Promis
           <select id="stream" name="stream" defaultValue={current.id} className="h-10 rounded-lg border border-cream-200 bg-white px-3">
             {streams.map((st) => (
               <option key={st.id} value={st.id}>
-                {gradeName(st.gradeCode)} {st.name} · {st.campusId === "c-rui" ? "Ruiru" : "Syokimau"}
+                {gradeName(st.gradeCode)} {st.name} · {s.campuses.length > 1 ? s.campuses.find((c) => c.id === st.campusId)?.name ?? "" : ""}
               </option>
             ))}
           </select>
