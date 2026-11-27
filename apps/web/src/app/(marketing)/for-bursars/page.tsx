@@ -8,7 +8,7 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "For bursars",
-  description: "Get your week back: automatic M-Pesa matching, a review queue that learns, sibling splits, manual receipts, daily cash-up, banking and one-click reports.",
+  description: "Automatic M-Pesa matching for school bursars, with a review queue for the payments it can’t place, sibling splits, cash and cheque receipts, daily cash-up and term reports.",
 };
 
 const signals = [
@@ -16,8 +16,8 @@ const signals = [
   ["Exact family code", "One payment for every child in the family", "Certain"],
   ["Registered guardian phone", "The payer’s number matches a guardian on record", "Very strong"],
   ["Learned phone", "A number Shulife has learned from your past decisions", "Strong"],
-  ["Name in the reference", "“KAMAU GRADE 4” — fuzzy matched within the grade", "Good"],
-  ["Admission number typo", "One digit off — suggested, never applied on its own", "Suggestion"],
+  ["Name in the reference", "“KAMAU GRADE 4”, compared against learners in that grade", "Good"],
+  ["Admission number typo", "One digit off. Suggested to you, never applied on its own", "Suggestion"],
   ["Payer name and amount", "Similar to a guardian’s name, or equal to a balance or instalment", "Supporting"],
 ];
 
@@ -28,9 +28,9 @@ function MatchCard() {
     { name: "Atieno family", why: "Similar payer name", pct: 31 },
   ];
   return (
-    <div className="rounded-[2rem] bg-cream-50 p-6 shadow-lift ring-1 ring-navy-900/10 sm:p-8">
+    <div className="rounded-2xl bg-cream-50 p-6 shadow-lift ring-1 ring-navy-900/10 sm:p-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-xs font-bold uppercase tracking-[0.16em] text-gold-700">Review queue · 12 left, about 3 minutes</p>
+        <p className="text-sm font-semibold text-gold-700">Review queue · 12 left, about 3 minutes</p>
         <div className="h-1.5 w-28 overflow-hidden rounded-full bg-navy-100">
           <div className="h-full w-3/4 rounded-full bg-navy-900" />
         </div>
@@ -83,7 +83,7 @@ function CashUp() {
     ["Bank slips", 4, 121000],
   ] as const;
   return (
-    <div className="rounded-[2rem] bg-navy-900 p-6 text-cream-50 shadow-lift sm:p-8">
+    <div className="rounded-2xl bg-navy-900 p-6 text-cream-50 shadow-lift sm:p-8">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm text-cream-100/70">Daily cash-up · Front office</p>
@@ -127,27 +127,27 @@ export default function ForBursarsPage() {
         eyebrow="For bursars and accounts"
         title={
           <>
-            Get your <span className="italic text-gold-600">week</span> back.
+            Stop matching M-Pesa statements by hand
           </>
         }
-        intro="No more matching hundreds of M-Pesa messages by hand at the start of term. Shulife does the matching, the splitting and the receipting — you handle the few that need a human."
+        intro="No more matching hundreds of M-Pesa messages by hand at the start of term. Shulife matches, splits and receipts the payments it’s sure about. You decide on the rest."
         actions={
           <>
             <Button href="/book-demo/" arrow>
-              Book a free demo
+              Book a demo
             </Button>
             <Button href="#matching" variant="outline">
               How matching works
             </Button>
           </>
         }
-        photo={{ name: "bursar", alt: "A smiling bursar working calmly at her laptop", position: "object-[50%_30%]" }}
+        photo={{ name: "bursar", alt: "A bursar at her desk with a laptop and box files", position: "object-[50%_30%]" }}
       />
 
       {site.demoVideoUrl && (
         <section className="pb-8">
           <Container>
-            <div className="aspect-video overflow-hidden rounded-[2rem] bg-navy-900">
+            <div className="aspect-video overflow-hidden rounded-2xl bg-navy-900">
               <iframe src={site.demoVideoUrl} title="Shulife for bursars" className="size-full" allow="fullscreen" />
             </div>
           </Container>
@@ -157,8 +157,8 @@ export default function ForBursarsPage() {
       <section id="matching" className="scroll-mt-20 bg-cream-100 py-24 sm:py-32">
         <Container className="grid gap-14 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
           <div className="min-w-0">
-            <SectionHeading eyebrow="Matching, explained" title="Seven signals. One confident match." intro="Shulife scores every possible family or learner and only applies a payment automatically when it is very confident and clearly ahead of the next option. Everything else comes to you." />
-            <Reveal className="mt-10 overflow-hidden rounded-3xl bg-cream-50 ring-1 ring-navy-900/10">
+            <SectionHeading eyebrow="Matching, explained" title="How Shulife decides whose payment it is" intro="Shulife scores every possible family or learner and only applies a payment automatically when it is very confident and clearly ahead of the next option. Everything else comes to you." />
+            <Reveal className="mt-10 overflow-hidden rounded-2xl bg-cream-50 ring-1 ring-navy-900/10">
               <table className="w-full text-left">
                 <thead className="bg-navy-900 text-cream-50">
                   <tr>
@@ -183,7 +183,7 @@ export default function ForBursarsPage() {
           <div className="min-w-0 lg:pt-24">
             <Reveal>
               <Eyebrow>The review queue</Eyebrow>
-              <h3 className="font-display text-3xl text-navy-900 sm:text-4xl">Keyboard-fast. And it learns.</h3>
+              <h3 className="font-display text-3xl text-navy-900 sm:text-4xl">The ones it isn’t sure about</h3>
               <p className="mt-4 text-lg leading-relaxed text-ink-600">Each uncertain payment shows the top three suggestions with the reasons. Press 1, 2 or 3 to assign. Every decision teaches Shulife the payer’s phone for next time.</p>
             </Reveal>
             <Reveal delay={100} className="mt-8">
@@ -195,7 +195,7 @@ export default function ForBursarsPage() {
 
       <section id="siblings" className="scroll-mt-20 py-24 sm:py-32">
         <Container>
-          <SectionHeading eyebrow="Sibling rules" title="One payment for three children? Split by your rule." intro="Choose how your school shares family payments. Parents get a confirmation of the split with a link to request a change, which comes to you as a simple reallocation." className="mb-12" />
+          <SectionHeading eyebrow="Sibling rules" title="Splitting one payment between siblings" intro="Choose how your school shares family payments. Parents get a confirmation of the split with a link to request a change, which comes to you as a simple reallocation." className="mb-12" />
           <Reveal>
             <SiblingDemo />
           </Reveal>
@@ -206,9 +206,9 @@ export default function ForBursarsPage() {
         <Container className="space-y-28">
           <FeatureRow
             eyebrow="Cash, cheques and banking"
-            title="Every way parents pay, in one clean ledger."
+            title="Cash, cheques and bank deposits in the same ledger"
             body="Record cash, cheques and bank slips with a photo in seconds. Import bank statements so Paybill payments to your bank go through the same matching. Close each day with a cash-up report and match it to your banking."
-            points={["Manual receipts with slip photos, all audited", "Bank statement import (CSV)", "Unbanked cash alerts after the days you choose", "Locked days — changes need an approved adjustment"]}
+            points={["Manual receipts with slip photos, all audited", "Bank statement import (CSV)", "Unbanked cash alerts after the days you choose", "Closed days can only be changed with an approved adjustment"]}
             visual={<CashUp />}
           />
         </Container>
@@ -216,13 +216,13 @@ export default function ForBursarsPage() {
 
       <section className="py-24 sm:py-32">
         <Container>
-          <SectionHeading center eyebrow="The rest of your term" title="Invoices, close and reports — in clicks." />
+          <SectionHeading eyebrow="The rest of the term" title="Invoicing, closing the term and reports" />
           <div className="mt-14">
             <FeatureGrid
               cols={3}
               items={[
                 { t: "Fee structure matrix", d: "Grades × fee items in a familiar grid. Copy last term, add an uplift and compare before publishing.", icon: Icon.Chart },
-                { t: "Invoice the whole school", d: "Preview, then invoice every learner — with optional items, discounts and sponsors applied.", icon: Icon.Receipt },
+                { t: "Invoice the whole school", d: "Preview first, then invoice every learner with their optional items, discounts and sponsors applied.", icon: Icon.Receipt },
                 { t: "Term close", d: "Lock the term and carry every balance forward with full history.", icon: Icon.Calendar },
                 { t: "One-click reports", d: "Collection by grade and stream, fee items, plans, waivers, cash-up and banking.", icon: Icon.Book },
                 { t: "Never edit, always adjust", d: "Payments and ledger entries are permanent. Corrections are new, approved entries.", icon: Icon.Lock },
@@ -230,8 +230,8 @@ export default function ForBursarsPage() {
               ]}
             />
           </div>
-          <Reveal className="mx-auto mt-14 max-w-2xl rounded-3xl bg-navy-900 p-8 text-cream-50 sm:p-10">
-            <h3 className="font-display text-3xl">What you’ll stop doing</h3>
+          <Reveal className="mt-14 max-w-2xl rounded-2xl bg-navy-900 p-8 text-cream-50 sm:p-10">
+            <h3 className="font-display text-3xl">What goes away</h3>
             <Checklist
               tone="dark"
               className="mt-6"
@@ -241,7 +241,7 @@ export default function ForBursarsPage() {
         </Container>
       </section>
 
-      <CtaBand title={<>Give your bursar their <span className="italic text-gold-300">week</span> back.</>} />
+      <CtaBand />
     </>
   );
 }

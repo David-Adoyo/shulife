@@ -41,7 +41,7 @@ export default async function ArticlePage({ params }: Props) {
           </Container>
         </header>
         <Container className="max-w-[1100px]">
-          <div className="aspect-[16/8] overflow-hidden rounded-[2rem]">
+          <div className="aspect-[16/8] overflow-hidden rounded-2xl">
             <Photo name={a.photo} alt={a.alt} priority className="size-full" sizes="(min-width:1100px) 1100px, 92vw" />
           </div>
         </Container>
@@ -74,8 +74,8 @@ export default async function ArticlePage({ params }: Props) {
           <h2 className="font-display text-3xl text-navy-900">More guides</h2>
           <div className="mt-8 grid gap-5 md:grid-cols-2">
             {others.map((o) => (
-              <a key={o.slug} href={`/resources/${o.slug}/`} className="group rounded-3xl bg-cream-50 p-7 shadow-soft ring-1 ring-navy-900/5">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-gold-700">{o.audience}</p>
+              <a key={o.slug} href={`/resources/${o.slug}/`} className="group rounded-2xl bg-cream-50 p-7 ring-1 ring-navy-900/5">
+                <p className="text-sm font-semibold text-gold-700">{o.audience}</p>
                 <p className="mt-2 font-display text-2xl leading-snug text-navy-900">{o.title}</p>
                 <span className="mt-5 inline-flex items-center gap-2 font-semibold text-navy-900">
                   Read <Icon.Arrow className="size-4 transition group-hover:translate-x-1" />

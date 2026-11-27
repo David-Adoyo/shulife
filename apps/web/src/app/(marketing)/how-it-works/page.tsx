@@ -8,7 +8,7 @@ import { Button, Container, Eyebrow, Money } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "How it works",
-  description: "From fee structure to receipt: how Shulife bills, collects, matches, splits and confirms school fees — and how your school goes live in an afternoon.",
+  description: "From fee structure to receipt: how Shulife bills, matches, splits and receipts school fees, and what setting it up involves.",
 };
 
 const onboarding = [
@@ -19,13 +19,13 @@ const onboarding = [
   ["Opening balances", "Import balances brought forward so statements are right from day one."],
   ["Connect payments", "Connect your M-Pesa Paybill or Till with a guided test, and choose your bank statement format."],
   ["Parents", "Preview the welcome message in English and Kiswahili, and print the “How to pay school fees” notice."],
-  ["Reminders", "Pick a tone — gentle, standard or firm-but-polite — and review the term timeline."],
+  ["Reminders", "Pick how firm the wording should be and check the reminder dates for the term."],
   ["Go live", "Your first automatically matched payment starts your free period."],
 ];
 
 const lifecycle = [
   { t: "Before the term", d: "Promote learners, approve the fee structure, run invoicing and publish statements to parents.", icon: Icon.Calendar },
-  { t: "During the term", d: "Payments, matching, receipts, plans, reminders, clearance and notices — all running on their own.", icon: Icon.Phone },
+  { t: "During the term", d: "Payments are matched and receipted as they arrive. Plans, reminders, clearance lists and notices run on the dates you set.", icon: Icon.Phone },
   { t: "Term close", d: "Lock the term, carry every balance forward automatically and download the closing report pack.", icon: Icon.Book },
 ];
 
@@ -36,17 +36,17 @@ export default function HowItWorksPage() {
         eyebrow="How it works"
         title={
           <>
-            Bill. Collect. Confirm. <span className="italic text-gold-600">Relax.</span>
+            How Shulife works
           </>
         }
-        intro="Shulife sits beside the school system you already use and takes care of fees and parents — from the first invoice to the last receipt of the term."
+        intro="Shulife runs next to the school system you already use. It handles the fees side, from the first invoice of term to the last receipt."
         actions={
           <>
             <Button href="/book-demo/" arrow>
-              Book a free demo
+              Book a demo
             </Button>
             <Button href="#onboarding" variant="outline">
-              Live in an afternoon
+              Setting up
             </Button>
           </>
         }
@@ -55,7 +55,7 @@ export default function HowItWorksPage() {
 
       <section className="bg-cream-100 py-24 sm:py-32">
         <Container className="grid gap-12 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
-          <SectionHeading eyebrow="The three steps" title="One calm loop, every term." intro="Every step is designed so that the people who run your school spend their time on learners, not on spreadsheets." />
+          <SectionHeading eyebrow="The three steps" title="The same three steps every term" intro="Bill at the start of term, collect through it, and close it off at the end." />
           <ThreeSteps />
         </Container>
       </section>
@@ -63,7 +63,7 @@ export default function HowItWorksPage() {
       {/* Payment journey */}
       <section className="py-24 sm:py-32">
         <Container>
-          <SectionHeading center eyebrow="Follow one payment" title="From a parent’s phone to a receipt, in seconds." />
+          <SectionHeading center eyebrow="Follow one payment" title="What happens to one payment" />
           <ol className="mt-16 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             {[
               {
@@ -112,7 +112,7 @@ export default function HowItWorksPage() {
                 ),
               },
             ].map((s, i) => (
-              <Reveal as="li" key={s.n} delay={i * 90} className="flex flex-col gap-5 rounded-3xl bg-cream-50 p-6 shadow-soft ring-1 ring-navy-900/5">
+              <Reveal as="li" key={s.n} delay={i * 90} className="flex flex-col gap-5 rounded-2xl bg-cream-50 p-6 ring-1 ring-navy-900/5">
                 <div className="flex items-center gap-3">
                   <span className="inline-flex size-9 items-center justify-center rounded-full bg-gold-400 font-display text-lg text-navy-950">{s.n}</span>
                   <h3 className="font-semibold text-navy-900">{s.t}</h3>
@@ -131,14 +131,14 @@ export default function HowItWorksPage() {
           <Reveal>
             <Eyebrow tone="cream">Onboarding</Eyebrow>
             <h2 className="font-display text-4xl leading-[1.08] sm:text-[3.2rem]">
-              Live in an <span className="italic text-gold-300">afternoon.</span>
+              Setting up
             </h2>
             <p className="mt-6 max-w-md text-lg leading-relaxed text-cream-100/80">A step-by-step set-up that saves as you go, so you can stop and pick up again at any time.</p>
-            <div className="mt-8 rounded-3xl bg-navy-800 p-6">
+            <div className="mt-8 rounded-2xl bg-navy-800 p-6">
               <p className="font-semibold text-gold-300">Prefer us to do it?</p>
-              <p className="mt-2 text-cream-100/80">Our team can import your learners, fees, balances and payment settings for you — every step recorded in your audit log.</p>
+              <p className="mt-2 text-cream-100/80">We can do the import for you: learners, fees, opening balances and payment settings. Each step is recorded in your audit log.</p>
             </div>
-            <PhotoCard name="graduation" alt="A beaming graduate hugging her proud teacher as classmates celebrate" className="mt-8 aspect-[4/3.4]" />
+            <PhotoCard name="bursar" alt="A bursar at her desk with a laptop and box files" className="mt-8 aspect-[4/3.4]" />
           </Reveal>
           <ol className="space-y-3">
             {onboarding.map(([t, d], i) => (
@@ -157,19 +157,19 @@ export default function HowItWorksPage() {
       {/* Term lifecycle */}
       <section className="py-24 sm:py-32">
         <Container>
-          <SectionHeading eyebrow="The whole term" title="Before, during and after — handled." intro="Shulife follows the rhythm of the Kenyan school year: three terms, with a clean close and a fresh start each time." />
+          <SectionHeading eyebrow="The whole term" title="Across the school year" intro="Three terms a year, each closed off properly with balances carried forward." />
           <div className="mt-14 grid gap-5 md:grid-cols-3">
             {lifecycle.map((l, i) => (
-              <Reveal key={l.t} delay={i * 100} className="rounded-3xl bg-cream-100 p-8">
+              <Reveal key={l.t} delay={i * 100} className="rounded-2xl bg-cream-100 p-8">
                 <l.icon className="size-8 text-gold-600" />
                 <h3 className="mt-6 font-display text-2xl text-navy-900">{l.t}</h3>
                 <p className="mt-3 text-lg leading-relaxed text-ink-600">{l.d}</p>
               </Reveal>
             ))}
           </div>
-          <Reveal className="mt-10 flex flex-wrap items-center justify-between gap-6 rounded-3xl border border-navy-900/10 p-8">
+          <Reveal className="mt-10 flex flex-wrap items-center justify-between gap-6 rounded-2xl border border-navy-900/10 p-8">
             <p className="max-w-xl text-lg text-navy-900">
-              <b>Works alongside your school system.</b> Import and export learners, classes and balances as Excel or CSV — whatever you use today.
+              <b>Works alongside your school system.</b> Import and export learners, classes and balances as Excel or CSV.
             </p>
             <Button href="/features/" variant="navy" arrow>
               See every feature

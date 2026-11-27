@@ -15,7 +15,7 @@ export function LegalPage({ title, intro, covers, current }: { title: string; in
     <section className="py-16 lg:py-24">
       <Container className="grid gap-12 lg:grid-cols-[16rem_1fr] lg:gap-20">
         <nav aria-label="Legal" className="lg:sticky lg:top-28 lg:self-start">
-          <p className="mb-4 text-xs font-bold uppercase tracking-[0.16em] text-gold-700">Legal</p>
+          <p className="mb-4 text-sm font-semibold text-gold-700">Legal</p>
           <ul className="space-y-1">
             {legalNav.map(([l, h]) => (
               <li key={h}>

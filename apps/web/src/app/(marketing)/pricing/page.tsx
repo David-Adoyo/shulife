@@ -24,7 +24,7 @@ const included = [
 ];
 
 const steps = [
-  { t: "Free to start", d: "Set up, import your learners and connect your Paybill. Nothing to pay.", icon: Icon.Sparkle },
+  { t: "Free to start", d: "Set up, import your learners and connect your Paybill. Nothing to pay.", icon: Icon.Check },
   { t: "First match", d: "Your free period begins the moment your first payment is matched automatically.", icon: Icon.Match },
   { t: "Per learner, per term", d: "Then a simple fee for each enrolled learner each term, with a minimum per school.", icon: Icon.Users },
 ];
@@ -37,10 +37,10 @@ export default function PricingPage() {
         eyebrow="Pricing"
         title={
           <>
-            Simple, fair, <span className="italic text-gold-600">per learner.</span>
+            One price per learner, per term
           </>
         }
-        intro="One price per enrolled learner per term, with everything included. Free until your first payment is matched automatically."
+        intro="Everything is included in that price. You don’t pay anything until Shulife has matched your first payment automatically."
         actions={
           <>
             <Button href="/book-demo/" arrow>
@@ -52,16 +52,15 @@ export default function PricingPage() {
           </>
         }
         aside={
-          <Reveal className="relative overflow-hidden rounded-[2rem] bg-navy-900 p-8 text-cream-50 shadow-lift sm:p-10">
-            <div aria-hidden className="absolute -right-20 -top-20 size-64 rounded-full border-[32px] border-gold-400/10" />
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-gold-300">Shulife</p>
+          <Reveal className="relative overflow-hidden rounded-2xl bg-navy-900 p-8 text-cream-50 shadow-lift sm:p-10">
+            <p className="text-sm font-semibold text-gold-300">Shulife</p>
             <p className="mt-4 font-display text-5xl">{price != null ? <Money amount={price} /> : "Per learner"}</p>
-            <p className="mt-1 text-cream-100/70">{price != null ? "per enrolled learner, per term" : "per term — your quote is based on enrolment"}</p>
+            <p className="mt-1 text-cream-100/70">{price != null ? "per enrolled learner, per term" : "per term, quoted on your enrolment"}</p>
             <div className="my-8 h-px bg-cream-50/10" />
             <Checklist items={included} tone="dark" />
             <div className="mt-8">
               <Button href="/book-demo/" className="w-full" arrow>
-                Book a free demo
+                Book a demo
               </Button>
             </div>
           </Reveal>
@@ -70,10 +69,10 @@ export default function PricingPage() {
 
       <section className="bg-cream-100 py-24 sm:py-28">
         <Container>
-          <SectionHeading center eyebrow="How billing works" title="You only pay once Shulife is working for you." />
+          <SectionHeading center eyebrow="How billing works" title="When you start paying" />
           <div className="mt-14 grid gap-5 md:grid-cols-3">
             {steps.map((s, i) => (
-              <Reveal key={s.t} delay={i * 100} className="relative rounded-3xl bg-cream-50 p-8 shadow-soft">
+              <Reveal key={s.t} delay={i * 100} className="relative rounded-2xl bg-cream-50 p-8">
                 <span className="absolute right-6 top-6 font-display text-5xl text-gold-300">{i + 1}</span>
                 <s.icon className="size-8 text-navy-900" />
                 <h3 className="mt-6 font-display text-2xl text-navy-900">{s.t}</h3>
@@ -81,11 +80,11 @@ export default function PricingPage() {
               </Reveal>
             ))}
           </div>
-          <Reveal className="mt-10 grid gap-6 rounded-3xl bg-navy-900 p-8 text-cream-50 sm:grid-cols-[auto_1fr] sm:items-center sm:p-10">
+          <Reveal className="mt-10 grid gap-6 rounded-2xl bg-navy-900 p-8 text-cream-50 sm:grid-cols-[auto_1fr] sm:items-center sm:p-10">
             <Icon.Shield className="size-12 text-gold-300" />
             <div>
-              <h3 className="font-display text-2xl">Parents are never affected by your subscription.</h3>
-              <p className="mt-2 text-cream-100/80">If an invoice is overdue, your account becomes read-only after a grace period — but payment matching, receipts and parent balances keep running. Always.</p>
+              <h3 className="font-display text-2xl">If your subscription lapses, parents aren’t affected.</h3>
+              <p className="mt-2 text-cream-100/80">After a grace period your staff accounts become read-only, but payments are still matched, receipts still go out and parents can still check balances.</p>
             </div>
           </Reveal>
         </Container>
@@ -93,7 +92,7 @@ export default function PricingPage() {
 
       <section className="py-24 sm:py-28">
         <Container className="grid gap-6 md:grid-cols-2">
-          <Reveal className="rounded-3xl bg-cream-100 p-8 sm:p-10">
+          <Reveal className="rounded-2xl bg-cream-100 p-8 sm:p-10">
             <Icon.Gate className="size-8 text-gold-600" />
             <h3 className="mt-6 font-display text-3xl text-navy-900">School groups</h3>
             <p className="mt-3 text-lg text-ink-600">Several campuses? One organisation, a group dashboard and one invoice. Talk to us about group pricing.</p>
@@ -103,7 +102,7 @@ export default function PricingPage() {
               </Button>
             </div>
           </Reveal>
-          <Reveal delay={100} className="rounded-3xl bg-cream-100 p-8 sm:p-10">
+          <Reveal delay={100} className="rounded-2xl bg-cream-100 p-8 sm:p-10">
             <Icon.Phone className="size-8 text-gold-600" />
             <h3 className="mt-6 font-display text-3xl text-navy-900">Pay your way</h3>
             <p className="mt-3 text-lg text-ink-600">Pay for Shulife by M-Pesa or card, each term. Your school fees never pass through us.</p>
@@ -118,7 +117,7 @@ export default function PricingPage() {
 
       <section id="calculator" className="scroll-mt-20 bg-cream-100 py-24 sm:py-28">
         <Container>
-          <SectionHeading center eyebrow="What late fees cost you" title="Late payments are expensive. Find out how much." className="mb-14" />
+          <SectionHeading center eyebrow="Cost of late fees" title="How much is sitting unpaid at the start of term?" className="mb-14" />
           <Reveal>
             <Calculator />
           </Reveal>
@@ -128,7 +127,7 @@ export default function PricingPage() {
       <section className="py-24 sm:py-28">
         <FaqJsonLd items={faqBilling} />
         <Container className="grid gap-12 lg:grid-cols-[1fr_1.6fr] lg:gap-20">
-          <SectionHeading eyebrow="Billing questions" title="Straight answers." />
+          <SectionHeading eyebrow="Billing" title="Billing questions" />
           <Reveal>
             <FaqList items={faqBilling} tone="white" />
           </Reveal>

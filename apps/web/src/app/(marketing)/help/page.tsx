@@ -32,10 +32,10 @@ export default function HelpPage() {
         eyebrow="Help centre"
         title={
           <>
-            How can we <span className="italic text-gold-600">help?</span>
+            Help centre
           </>
         }
-        intro="Plain answers for school teams and parents. Parents — for step-by-step help in English or Kiswahili, visit the parent guide."
+        intro="Plain answers for school teams and parents. Parents: the parent guide has step-by-step help in English and Kiswahili."
         actions={
           <>
             <Button href="/for-parents/" arrow>
@@ -49,7 +49,7 @@ export default function HelpPage() {
         aside={
           <div className="grid gap-3">
             {topics.map((t) => (
-              <a key={t.id} href={`#${t.id}`} className="group flex items-center gap-5 rounded-2xl bg-cream-50 p-5 shadow-soft ring-1 ring-navy-900/5 transition hover:-translate-y-0.5 hover:bg-navy-900">
+              <a key={t.id} href={`#${t.id}`} className="group flex items-center gap-5 rounded-2xl bg-cream-50 p-5 ring-1 ring-navy-900/5 transition hover:-translate-y-0.5 hover:bg-navy-900">
                 <span className="inline-flex size-12 shrink-0 items-center justify-center rounded-2xl bg-gold-200 text-navy-900">
                   <t.icon className="size-6" />
                 </span>
@@ -84,7 +84,7 @@ export default function HelpPage() {
             <Eyebrow tone="cream">Contact</Eyebrow>
             <h2 className="font-display text-4xl sm:text-5xl">Still need a hand?</h2>
             <p className="mt-5 max-w-md text-lg text-cream-100/80">
-              Parents: for questions about your balance or a payment, please contact your school’s office — they can see your account. Schools: we’re here to help.
+              Parents: for questions about your balance or a payment, please contact your school’s office. They can see your account; we can’t. Schools: we’re here to help.
             </p>
           </div>
           <div className="grid gap-3">

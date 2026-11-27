@@ -10,7 +10,7 @@ type BtnProps = {
 };
 
 const variants = {
-  gold: "bg-gold-400 text-navy-950 hover:bg-gold-300 shadow-[0_8px_24px_-8px_rgb(201_154_59/0.7)]",
+  gold: "bg-gold-400 text-navy-950 hover:bg-gold-300",
   navy: "bg-navy-900 text-cream-50 hover:bg-navy-800",
   outline: "border-2 border-navy-900 text-navy-900 hover:bg-navy-900 hover:text-cream-50",
   "outline-cream": "border-2 border-cream-100/70 text-cream-50 hover:bg-cream-50 hover:text-navy-900",
@@ -31,14 +31,7 @@ export function Button({ href, children, variant = "gold", className = "", arrow
 
 export function Eyebrow({ children, tone = "gold" }: { children: ReactNode; tone?: "gold" | "cream" }) {
   return (
-    <p
-      className={`mb-4 inline-flex items-center gap-2 text-[0.8rem] font-bold uppercase tracking-[0.18em] ${
-        tone === "gold" ? "text-gold-700" : "text-gold-300"
-      }`}
-    >
-      <span className="h-px w-6 bg-current" aria-hidden />
-      {children}
-    </p>
+    <p className={`mb-3 text-[0.95rem] font-semibold ${tone === "gold" ? "text-gold-700" : "text-gold-300"}`}>{children}</p>
   );
 }
 

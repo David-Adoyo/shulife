@@ -17,8 +17,8 @@ const menus: Menu[] = [
       {
         title: "Collect fees",
         links: [
-          { label: "Automatic M-Pesa matching", href: "/for-bursars/#matching", note: "Every payment, the right learner" },
-          { label: "Sibling splits", href: "/for-bursars/#siblings", note: "One payment, every child" },
+          { label: "Automatic M-Pesa matching", href: "/for-bursars/#matching", note: "Including wrong account numbers" },
+          { label: "Sibling splits", href: "/for-bursars/#siblings", note: "One payment, several children" },
           { label: "Instant receipts", href: "/features/#collection", note: "Numbered, QR-verifiable" },
           { label: "Bank, cash and cheque", href: "/for-bursars/#cash" },
         ],
@@ -217,7 +217,7 @@ export function Header() {
             <div className="grid grid-cols-3 gap-8">
               {active.columns.map((c) => (
                 <div key={c.title}>
-                  <p className="mb-4 text-xs font-bold uppercase tracking-[0.16em] text-gold-700">{c.title}</p>
+                  <p className="mb-4 text-sm font-semibold text-gold-700">{c.title}</p>
                   <ul className="space-y-1">
                     {c.links.map((l) => (
                       <li key={l.label}>
@@ -247,7 +247,7 @@ export function Header() {
               <div className="space-y-6 pb-6">
                 {m.columns.map((c) => (
                   <div key={c.title}>
-                    <p className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-gold-700">{c.title}</p>
+                    <p className="mb-2 text-sm font-semibold text-gold-700">{c.title}</p>
                     {c.links.map((l) => (
                       <a key={l.label} href={l.href} onClick={() => setMobile(false)} className="block py-2 text-navy-900">
                         {l.label}

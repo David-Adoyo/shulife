@@ -5,7 +5,7 @@
  */
 export const site = {
   name: "Shulife",
-  tagline: "Every fee. Every parent. On time.",
+  tagline: "School fee collection for Kenyan schools",
   description:
     "Shulife matches every M-Pesa payment, splits it between siblings, receipts parents instantly and keeps them informed — school fees collection and parent communication for Kenyan private schools.",
   domain: "shulife.co.ke" as string | null,

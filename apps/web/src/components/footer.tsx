@@ -39,7 +39,7 @@ export function Footer() {
           <div className="grid grid-cols-2 gap-10 sm:grid-cols-4">
             {columns.map((c) => (
               <div key={c.title}>
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-gold-300">{c.title}</p>
+                <p className="text-sm font-semibold text-gold-300">{c.title}</p>
                 <ul className="mt-5 space-y-3">
                   {c.links.map(([label, href]) => (
                     <li key={label}>
@@ -67,7 +67,7 @@ export function Footer() {
           </ul>
         </div>
         <div className="mt-6 flex flex-wrap justify-between gap-4 text-xs text-cream-100/50">
-          <p>© {new Date().getFullYear()} Shulife. Every fee. Every parent. On time.</p>
+          <p>© {new Date().getFullYear()} Shulife</p>
           {site.odpcRegNo && <p>Registered with the ODPC · {site.odpcRegNo}</p>}
         </div>
       </Container>

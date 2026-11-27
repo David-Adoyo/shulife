@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Ripple, Mark } from "./brand";
+import { Mark } from "./brand";
 import { Ring } from "./hero";
 import { Icon } from "./icons";
 import { Reveal } from "./reveal";
@@ -73,8 +73,6 @@ export function PageHero({
   const dark = tone === "navy";
   return (
     <section className={`relative overflow-hidden ${dark ? "bg-navy-900 text-cream-50" : ""}`}>
-      {!dark && <div aria-hidden className="grain absolute inset-0 [mask-image:radial-gradient(60%_60%_at_85%_20%,black,transparent)]" />}
-      {dark && <div aria-hidden className="absolute -right-40 -top-40 size-[34rem] rounded-full border-[48px] border-cream-50/[0.04]" />}
       <Container className={`relative grid items-center gap-12 pb-20 pt-12 sm:pb-24 lg:gap-16 lg:pt-16 ${photo || aside ? "lg:grid-cols-[1.05fr_1fr]" : ""}`}>
         <div className={photo || aside ? "" : "max-w-3xl"}>
           <Eyebrow tone={dark ? "cream" : "gold"}>{eyebrow}</Eyebrow>
@@ -84,8 +82,7 @@ export function PageHero({
         </div>
         {photo && (
           <div className="relative mx-auto w-full max-w-[560px] lg:max-w-none">
-            <div aria-hidden className="absolute -right-8 -top-8 size-64 rounded-full bg-gold-200/60 blur-3xl" />
-            <div className="relative aspect-[4/3.6] overflow-hidden rounded-[2rem] bg-navy-100 shadow-lift">
+            <div className="relative aspect-[4/3.6] overflow-hidden rounded-2xl bg-navy-100">
               <Photo name={photo.name} alt={photo.alt} priority sizes="(min-width: 1024px) 560px, 92vw" className={`size-full ${photo.position ?? ""}`} />
             </div>
           </div>
@@ -123,18 +120,6 @@ export function SectionHeading({
   );
 }
 
-/* ---------- Big kinetic words ---------- */
-
-export function BigWord({ word, tone = "light" }: { word: string; tone?: "light" | "dark" }) {
-  return (
-    <p aria-hidden className={`select-none font-display text-[19vw] font-semibold leading-[0.82] tracking-[-0.05em] sm:text-[11rem] lg:text-[11.5rem] xl:text-[12.5rem] ${tone === "light" ? "text-navy-900" : "text-cream-50"}`}>
-      {word}
-      <br />
-      <span className="italic text-transparent [-webkit-text-stroke:2px_var(--color-gold-500)]">smarter</span>
-    </p>
-  );
-}
-
 /* ---------- Feature card grid ---------- */
 
 export type Feature = { t: string; d: string; icon: (p: React.SVGProps<SVGSVGElement>) => React.JSX.Element };
@@ -143,27 +128,13 @@ export function FeatureGrid({ items, cols = 4, tone = "light" }: { items: Featur
   const grid = { 2: "sm:grid-cols-2", 3: "sm:grid-cols-2 lg:grid-cols-3", 4: "sm:grid-cols-2 lg:grid-cols-4" }[cols];
   const dark = tone === "dark";
   return (
-    <div className={`grid gap-5 ${grid}`}>
-      {items.map((p, i) => (
-        <Reveal
-          key={p.t}
-          delay={(i % cols) * 80}
-          className={
-            dark
-              ? "rounded-3xl bg-navy-900 p-7 ring-1 ring-cream-50/5"
-              : "group rounded-3xl bg-cream-50 p-7 shadow-soft ring-1 ring-navy-900/5 transition duration-300 hover:-translate-y-1 hover:bg-navy-900 hover:shadow-lift"
-          }
-        >
-          {dark ? (
-            <p.icon className="size-7 text-gold-300" />
-          ) : (
-            <span className="inline-flex size-12 items-center justify-center rounded-2xl bg-gold-200 text-navy-900 transition group-hover:bg-gold-400">
-              <p.icon className="size-6" />
-            </span>
-          )}
-          <h3 className={`mt-6 text-lg font-bold transition ${dark ? "text-cream-50" : "text-navy-900 group-hover:text-cream-50"}`}>{p.t}</h3>
-          <p className={`mt-2 leading-relaxed transition ${dark ? "text-cream-100/70" : "text-ink-600 group-hover:text-cream-100/80"}`}>{p.d}</p>
-        </Reveal>
+    <div className={`grid gap-x-10 gap-y-10 ${grid}`}>
+      {items.map((p) => (
+        <div key={p.t} className={`border-t pt-6 ${dark ? "border-cream-50/15" : "border-navy-900/15"}`}>
+          <p.icon className={`size-6 ${dark ? "text-gold-300" : "text-gold-600"}`} />
+          <h3 className={`mt-4 text-lg font-bold ${dark ? "text-cream-50" : "text-navy-900"}`}>{p.t}</h3>
+          <p className={`mt-2 leading-relaxed ${dark ? "text-cream-100/70" : "text-ink-600"}`}>{p.d}</p>
+        </div>
       ))}
     </div>
   );
@@ -211,9 +182,7 @@ export function Checklist({ items, className = "", tone = "light" }: { items: st
     <ul className={`space-y-3 ${className}`}>
       {items.map((p) => (
         <li key={p} className={`flex items-start gap-3 ${tone === "dark" ? "text-cream-50" : "text-navy-900"}`}>
-          <span className={`mt-0.5 inline-flex size-6 shrink-0 items-center justify-center rounded-full ${tone === "dark" ? "bg-gold-400/15 text-gold-300" : "bg-gold-200 text-navy-900"}`}>
-            <Icon.Check className="size-3.5" strokeWidth={2.4} />
-          </span>
+          <Icon.Check className={`mt-1 size-4 shrink-0 ${tone === "dark" ? "text-gold-300" : "text-gold-600"}`} strokeWidth={2.4} />
           {p}
         </li>
       ))}
@@ -225,7 +194,7 @@ export function Checklist({ items, className = "", tone = "light" }: { items: st
 
 export function PhotoCard({ name, alt, label, className = "aspect-[4/3]" }: { name: PhotoName; alt: string; label?: string; className?: string }) {
   return (
-    <div className={`relative overflow-hidden rounded-[2rem] shadow-soft ${className}`}>
+    <div className={`relative overflow-hidden rounded-2xl ${className}`}>
       <Photo name={name} alt={alt} className="size-full" />
       {label && (
         <span className="absolute bottom-4 left-4 rounded-full bg-cream-50/90 px-3 py-1 text-sm font-semibold text-navy-900 backdrop-blur">{label}</span>
@@ -243,7 +212,7 @@ export function DashboardMock() {
   const tone = (v: number) => (v === 100 ? "bg-paid text-white" : v >= 85 ? "bg-paid/70 text-white" : v >= 75 ? "bg-partial/60 text-navy-950" : v >= 65 ? "bg-partial/35 text-navy-950" : "bg-due/60 text-white");
   const projection = [12, 18, 15, 24, 30, 22, 28, 35, 31, 40, 38, 46];
   return (
-    <div className="min-w-0 rounded-[2rem] bg-navy-900 p-6 text-cream-50 shadow-lift sm:p-8">
+    <div className="min-w-0 rounded-2xl bg-navy-900 p-6 text-cream-50 shadow-lift sm:p-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Mark tone="cream" className="h-8 w-auto" />
@@ -253,9 +222,7 @@ export function DashboardMock() {
           </div>
         </div>
         <span className="inline-flex items-center gap-2 rounded-full bg-cream-50/10 px-3 py-1.5 text-xs font-semibold">
-          <span className="relative size-2 rounded-full bg-paid">
-            <span className="absolute inset-0 animate-ping rounded-full bg-paid" />
-          </span>
+          <span className="size-2 rounded-full bg-paid" />
           Live
         </span>
       </div>
@@ -271,7 +238,7 @@ export function DashboardMock() {
           </div>
         </div>
         <div className="min-w-0">
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-gold-300">Class heatmap · % collected</p>
+          <p className="mb-3 text-sm font-semibold text-gold-300">Class heatmap · % collected</p>
           <div className="no-scrollbar overflow-x-auto">
             <table className="w-full border-separate border-spacing-1 text-center text-[0.7rem] tabular">
               <thead>
@@ -384,32 +351,24 @@ export function FaqJsonLd({ items }: { items: readonly (readonly [string, string
 /* ---------- Final CTA band ---------- */
 
 export function CtaBand({
-  title = (
-    <>
-      Begin a <span className="italic text-gold-300">calmer</span> term.
-    </>
-  ),
-  body = "See Shulife with your own fee structure in a free demo. No obligation, no hard sell.",
+  title = "See it with your own fee structure",
+  body = "Send us last term’s fee structure and a sample of your M-Pesa statement. In a 30-minute call we’ll show you how Shulife would have matched it.",
 }: {
   title?: ReactNode;
   body?: string;
 }) {
   return (
     <section className="relative overflow-hidden bg-navy-900 py-24 text-cream-50 sm:py-28">
-      <div aria-hidden className="absolute right-[14%] top-1/2 size-40 -translate-y-1/2 max-lg:hidden">
-        <Ripple className="rounded-full" color="border-gold-400/40" />
-      </div>
       <Container className="relative">
         <Reveal className="max-w-2xl">
-          <Mark tone="cream" className="h-14 w-auto" />
-          <h2 className="mt-8 font-display text-5xl leading-[1.02] sm:text-6xl">{title}</h2>
+          <h2 className="font-display text-4xl leading-[1.08] sm:text-5xl">{title}</h2>
           <p className="mt-6 max-w-md text-lg leading-relaxed text-cream-100/80">{body}</p>
           <div className="mt-10 flex flex-wrap gap-4">
             <Button href="/book-demo/" arrow>
-              Book a free demo
+              Book a demo
             </Button>
             <Button href="/how-it-works/" variant="outline-cream">
-              See how it works
+              How it works
             </Button>
           </div>
         </Reveal>

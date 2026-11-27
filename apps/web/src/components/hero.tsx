@@ -1,43 +1,27 @@
 "use client";
 
 import { useState } from "react";
-import { Ripple } from "./brand";
 import { Icon } from "./icons";
 import { Button, Container, Money } from "./ui";
 
 const audiences = {
   schools: {
     label: "For schools",
-    title: (
-      <>
-        Every fee. Every parent.{" "}
-        <em className="relative whitespace-nowrap not-italic text-gold-600">
-          On time.
-          <svg aria-hidden viewBox="0 0 220 18" className="absolute -bottom-2 left-0 w-full text-gold-400" preserveAspectRatio="none">
-            <path d="M3 13C50 5 120 3 217 9" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
-          </svg>
-        </em>
-      </>
-    ),
-    body: "Shulife matches every M-Pesa payment, splits it between siblings, receipts parents instantly and keeps them informed, so your bursar gets their week back.",
-    primary: { label: "Book a free demo", href: "/book-demo/" },
-    secondary: { label: "See how it works", href: "/how-it-works/" },
+    title: <>Fee payments, matched to the right child automatically</>,
+    body: "Parents keep paying into your Paybill the way they do now. Shulife reads each payment, finds the family, splits it between siblings and sends the receipt. Your bursar only sees the few it can’t place.",
+    primary: { label: "Book a demo", href: "/book-demo/" },
+    secondary: { label: "How it works", href: "/how-it-works/" },
     image: "/images/classroom",
-    alt: "A smiling teacher helping a diverse group of happy pupils with their exercise books in a sunlit classroom",
+    alt: "A teacher helping pupils with their exercise books",
   },
   parents: {
     label: "For parents",
-    title: (
-      <>
-        Pay school fees.{" "}
-        <em className="not-italic text-gold-600">Get a receipt in seconds.</em>
-      </>
-    ),
-    body: "Pay into your school's Paybill with your child's admission number. Shulife sends your receipt straight away, and you can check your balance on WhatsApp any time. No app. No password.",
+    title: <>Your fee receipt, by SMS or WhatsApp</>,
+    body: "Pay into your school’s Paybill with your child’s admission number as the account. You get a receipt straight away, and you can ask for your balance on WhatsApp whenever you need it. There’s nothing to download.",
     primary: { label: "How to pay", href: "/for-parents/#pay" },
     secondary: { label: "Check your balance", href: "/for-parents/#whatsapp" },
     image: "/images/parent",
-    alt: "A happy mother checking her phone at the school gate as her two children in uniform hug her",
+    alt: "A mother checking her phone at the school gate while her two children hug her",
   },
 } as const;
 
@@ -49,7 +33,6 @@ export function Hero() {
 
   return (
     <section id="top" className="relative overflow-hidden pb-16 pt-6 sm:pb-24 lg:pt-10">
-      <div aria-hidden className="grain absolute inset-0 [mask-image:radial-gradient(70%_60%_at_80%_30%,black,transparent)]" />
       <Container className="relative">
         <div role="tablist" aria-label="Choose your view" className="mb-10 inline-flex rounded-full bg-cream-100 p-1 ring-1 ring-navy-900/5">
           {(Object.keys(audiences) as Key[]).map((k) => (
@@ -58,8 +41,8 @@ export function Hero() {
               role="tab"
               aria-selected={who === k}
               onClick={() => setWho(k)}
-              className={`h-10 rounded-full px-5 text-sm font-semibold transition-all ${
-                who === k ? "bg-navy-900 text-cream-50 shadow-soft" : "text-navy-900 hover:text-navy-700"
+              className={`h-10 rounded-full px-5 text-sm font-semibold transition-colors ${
+                who === k ? "bg-navy-900 text-cream-50" : "text-navy-900 hover:text-navy-700"
               }`}
             >
               {audiences[k].label}
@@ -68,8 +51,8 @@ export function Hero() {
         </div>
 
         <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
-          <div key={who} className="animate-[fadeUp_.6s_ease-out]">
-            <h1 className="font-display text-[2.75rem] font-medium leading-[1.02] text-navy-900 sm:text-6xl lg:text-[4.6rem]">{a.title}</h1>
+          <div key={who}>
+            <h1 className="font-display text-[2.4rem] font-medium leading-[1.06] text-navy-900 sm:text-5xl lg:text-[3.6rem]">{a.title}</h1>
             <p className="mt-8 max-w-[34rem] text-lg leading-relaxed text-ink-600 sm:text-xl">{a.body}</p>
             <div className="mt-10 flex flex-wrap items-center gap-4">
               <Button href={a.primary.href} arrow>
@@ -79,22 +62,15 @@ export function Hero() {
                 {a.secondary.label}
               </Button>
             </div>
-            <ul className="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium text-ink-600">
-              {["Your money never touches us", "Works with your Paybill", "No app for parents"].map((t) => (
-                <li key={t} className="inline-flex items-center gap-2">
-                  <span className="inline-flex size-5 items-center justify-center rounded-full bg-gold-200 text-navy-900">
-                    <Icon.Check className="size-3.5" strokeWidth={2.4} />
-                  </span>
-                  {t}
-                </li>
-              ))}
-            </ul>
+            <p className="mt-8 max-w-[34rem] text-sm text-ink-600">
+              {who === "schools"
+                ? "Fees go straight to your school’s own Paybill or bank. Shulife never holds the money."
+                : "Shulife works for your child’s school. Questions about your account go to the school office."}
+            </p>
           </div>
 
           <div className="relative mx-auto w-full max-w-[560px] lg:max-w-none">
-            <div className="absolute -right-10 -top-10 size-72 rounded-full bg-gold-200/60 blur-3xl" aria-hidden />
-            <div className="absolute -bottom-12 -left-12 size-72 rounded-full bg-navy-100 blur-3xl" aria-hidden />
-            <div className="relative aspect-[4/4.4] overflow-hidden rounded-[2rem] bg-navy-100 shadow-lift sm:aspect-[4/3.9]">
+            <div className="relative aspect-[4/4.4] overflow-hidden rounded-2xl bg-navy-100 sm:aspect-[4/3.9]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 key={a.image}
@@ -102,10 +78,9 @@ export function Hero() {
                 srcSet={`${a.image}-800.webp 800w, ${a.image}-${who === "schools" ? 1536 : 1024}.webp ${who === "schools" ? 1536 : 1024}w`}
                 sizes="(min-width: 1024px) 560px, 92vw"
                 alt={a.alt}
-                className={`size-full animate-[fadeIn_.7s_ease-out] object-cover ${who === "parents" ? "object-[50%_30%]" : "object-[40%_50%]"}`}
+                className={`size-full object-cover ${who === "parents" ? "object-[50%_30%]" : "object-[40%_50%]"}`}
                 fetchPriority="high"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-navy-950/35 via-transparent to-transparent" />
             </div>
 
             {who === "schools" ? <SchoolCards /> : <ParentCards />}
@@ -119,30 +94,25 @@ export function Hero() {
 function SchoolCards() {
   return (
     <>
-      <div className="absolute -left-4 top-8 w-[min(300px,78%)] animate-float rounded-2xl bg-cream-50/95 p-4 shadow-lift ring-1 ring-navy-900/5 backdrop-blur sm:-left-10">
+      <div className="absolute -left-4 top-8 w-[min(300px,78%)] rounded-xl bg-cream-50 p-4 shadow-lift ring-1 ring-navy-900/10 sm:-left-10">
         <div className="flex items-start gap-3">
-          <span className="relative mt-0.5 inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-navy-900 text-gold-300">
-            <Ripple className="rounded-full" />
-            <Icon.Receipt className="size-5" />
-          </span>
           <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-wider text-paid">Payment matched · Auto</p>
+            <p className="text-xs font-semibold text-paid">Matched to the Otieno family · 07:42</p>
             <p className="mt-0.5 font-display text-2xl text-navy-900">
               <Money amount={45000} />
             </p>
-            <p className="text-sm text-ink-600">Split across 3 children · receipted</p>
+            <p className="text-sm text-ink-600">Split across 3 children, receipt sent</p>
           </div>
         </div>
         <SplitBar className="mt-3" />
       </div>
 
-      <div className="absolute -bottom-8 -right-3 w-[min(250px,64%)] rounded-2xl bg-navy-900 p-5 text-cream-50 shadow-lift sm:-right-8">
+      <div className="absolute -bottom-8 -right-3 w-[min(250px,64%)] rounded-xl bg-navy-900 p-5 text-cream-50 shadow-lift sm:-right-8">
         <div className="flex items-center gap-4">
           <Ring pct={86} />
           <div>
-            <p className="text-xs uppercase tracking-wider text-cream-100/70">Term 1 · 2027</p>
+            <p className="text-xs text-cream-100/70">Term 1, week 3</p>
             <p className="font-display text-2xl">86% collected</p>
-            <p className="text-xs text-cream-100/70">Live, by grade</p>
           </div>
         </div>
       </div>
@@ -153,14 +123,14 @@ function SchoolCards() {
 function ParentCards() {
   return (
     <>
-      <div className="absolute -left-4 top-10 w-[min(290px,78%)] animate-float rounded-2xl bg-[#e7f6ea] p-4 shadow-lift ring-1 ring-navy-900/5 sm:-left-10">
+      <div className="absolute -left-4 top-10 w-[min(290px,78%)] rounded-xl bg-[#e7f6ea] p-4 shadow-lift ring-1 ring-navy-900/10 sm:-left-10">
         <p className="text-xs font-semibold text-paid">WhatsApp · just now</p>
         <p className="mt-1 text-sm leading-snug text-ink-900">
-          Thank you! We have received <b>KSh 45,000</b> for Amani, Zawadi and Baraka. Receipt no. 2027-01845.
+          Mlima Academy: we have received <b>KSh 45,000</b> for Amani, Zawadi and Baraka. Receipt no. 2027-01845.
         </p>
       </div>
-      <div className="absolute -bottom-8 -right-3 w-[min(240px,62%)] rounded-2xl bg-navy-900 p-5 text-cream-50 shadow-lift sm:-right-8">
-        <p className="text-xs uppercase tracking-wider text-cream-100/70">Family balance</p>
+      <div className="absolute -bottom-8 -right-3 w-[min(240px,62%)] rounded-xl bg-navy-900 p-5 text-cream-50 shadow-lift sm:-right-8">
+        <p className="text-xs text-cream-100/70">Family balance</p>
         <p className="mt-1 font-display text-3xl">
           <Money amount={0} />
         </p>

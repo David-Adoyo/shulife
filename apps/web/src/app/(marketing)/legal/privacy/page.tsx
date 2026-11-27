@@ -11,7 +11,7 @@ export default function PrivacyPage() {
       intro="How personal data is handled for schools, parents and guardians under the Kenya Data Protection Act, 2019."
       covers={[
         "The roles: each school is the data controller, Shulife is the data processor",
-        "What we collect about learners and guardians — and what we never collect",
+        "What we collect about learners and guardians, and what we never collect",
         "How children’s data is protected, with guardian consent and in the child’s best interests",
         "WhatsApp, SMS and email messages, opt-ins and how to stop them",
         "How long records are kept, and how to ask for access or correction through your school",

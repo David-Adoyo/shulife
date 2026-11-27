@@ -23,13 +23,13 @@ const tabs: Tab[] = [
   {
     id: "receipts",
     label: "Receipts",
-    title: "“But I paid!” — never again.",
-    body: "Every payment gets an instant, numbered receipt by WhatsApp or SMS, with a PDF and a QR code anyone can verify. Parents always have proof.",
-    points: ["Sent within seconds of payment", "Itemised by child and fee item", "QR-verifiable for employers and sponsors"],
+    title: "A receipt for every payment, sent within seconds",
+    body: "Each receipt has a number, the amount for each child, and a PDF with a QR code that a sponsor or employer can check. If there’s ever a question about a payment, the parent has the paperwork.",
+    points: ["Sent by WhatsApp, or SMS if the parent isn’t on WhatsApp", "Broken down by child and fee item", "Checkable by QR code"],
     chat: (
       <>
         <Bubble from="them" time="08:14">
-          <b>Mlima Academy</b> 🧾
+          <b>Mlima Academy</b>
           <br />
           Receipt RCT-RUI-2027-000456
           <br />
@@ -49,16 +49,16 @@ const tabs: Tab[] = [
   {
     id: "balance",
     label: "Balance on WhatsApp",
-    title: "Balance? Just send SALIO.",
-    body: "Parents send BALANCE or SALIO and get every child's balance with a one-tap pay link. Only registered numbers get an answer, so family details stay private.",
-    points: ["English or Kiswahili, the parent's choice", "Works on any phone, no app needed", "Fewer calls to the front office"],
+    title: "Parents can ask for their balance at 9pm",
+    body: "They send BALANCE or SALIO on WhatsApp and get each child’s balance with a link to pay. Only phone numbers registered to the family get an answer.",
+    points: ["English or Kiswahili", "No app or login", "Fewer calls to the front office"],
     chat: (
       <>
         <Bubble from="me" time="19:02">
           SALIO
         </Bubble>
         <Bubble from="them" time="19:02">
-          Habari Bi. Otieno 👋
+          Habari Bi. Otieno,
           <br />
           Salio la familia, Muhula 1 2027:
           <br />• Amani: KSh 7,000
@@ -75,20 +75,20 @@ const tabs: Tab[] = [
   {
     id: "notices",
     label: "Notices",
-    title: "The right notice, to exactly the right parents.",
-    body: "Send to Grade 4 East, a bus route or the boarders in seconds — with read receipts. Trip consent and payment come together in one link.",
-    points: ["Audience chips: class, route, boarders", "Delivered and read, per notice", "Unread? Resend by SMS in one tap"],
+    title: "Notices that go to one class, not the whole school",
+    body: "Send to Grade 4 East, one bus route or just the boarders, and see who has read it. For trips, consent and payment are in the same link.",
+    points: ["Choose by class, route or boarding", "Delivered and read counts for each notice", "Resend by SMS to anyone who hasn’t opened it"],
     chat: (
       <>
         <Bubble from="them" time="10:30">
-          📣 <b>Grade 4 East · Science trip</b>
+          <b>Grade 4 East: science trip</b>
           <br />
           Our class visits the Nairobi National Museum on Friday 12 Feb. Please give consent and pay the trip fee by Monday.
           <br />
           <span className="text-navy-700 underline">Give consent and pay</span>
         </Bubble>
         <Bubble from="me" time="10:41">
-          Done ✅ Thank you, teacher!
+          Done. Thank you teacher
         </Bubble>
       </>
     ),
@@ -117,16 +117,14 @@ export function ConnectTabs() {
         ))}
       </div>
 
-      <div key={t.id} role="tabpanel" className="grid items-center gap-12 lg:grid-cols-2 animate-[fadeUp_.5s_ease-out]">
+      <div key={t.id} role="tabpanel" className="grid items-center gap-12 lg:grid-cols-2">
         <div>
           <h3 className="font-display text-4xl leading-tight text-cream-50 sm:text-5xl">{t.title}</h3>
           <p className="mt-5 max-w-lg text-lg leading-relaxed text-cream-100/80">{t.body}</p>
           <ul className="mt-8 space-y-3">
             {t.points.map((p) => (
               <li key={p} className="flex items-center gap-3 text-cream-50">
-                <span className="inline-flex size-6 items-center justify-center rounded-full bg-gold-400/15 text-gold-300">
-                  <Icon.Check className="size-4" strokeWidth={2.2} />
-                </span>
+                <Icon.Check className="size-4 shrink-0 text-gold-300" strokeWidth={2.4} />
                 {p}
               </li>
             ))}
@@ -139,7 +137,6 @@ export function ConnectTabs() {
         </div>
 
         <div className="relative mx-auto">
-          <div aria-hidden className="absolute -inset-10 rounded-full bg-gold-400/10 blur-3xl" />
           <div className="relative w-[290px] rounded-[2.6rem] bg-navy-950 p-3 shadow-lift ring-1 ring-cream-50/10 sm:w-[320px]">
             <div className="overflow-hidden rounded-[2rem] bg-[#efe7dc]">
               <div className="flex items-center gap-3 bg-[#0f5b4f] px-4 pb-3 pt-6 text-white">

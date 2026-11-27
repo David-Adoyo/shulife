@@ -66,8 +66,8 @@ export function SiblingDemo() {
     <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:gap-10">
       {/* Payment + rules */}
       <div className="flex flex-col gap-6">
-        <div className="rounded-3xl bg-navy-900 p-6 text-cream-50 sm:p-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gold-300">Incoming M-Pesa payment</p>
+        <div className="rounded-2xl bg-navy-900 p-6 text-cream-50 sm:p-8">
+          <p className="text-sm font-semibold text-gold-300">Incoming M-Pesa payment</p>
           <button
             type="button"
             draggable={!dropped}
@@ -94,15 +94,15 @@ export function SiblingDemo() {
           </p>
         </div>
 
-        <fieldset className="rounded-3xl bg-cream-100 p-6 sm:p-8">
+        <fieldset className="rounded-2xl bg-cream-100 p-6 sm:p-8">
           <legend className="sr-only">Sibling rule</legend>
-          <p className="mb-4 text-xs font-bold uppercase tracking-[0.16em] text-gold-700">The school's sibling rule</p>
+          <p className="mb-4 text-sm font-semibold text-gold-700">The school's sibling rule</p>
           <div className="grid gap-2">
             {rules.map((r) => (
               <label
                 key={r.id}
                 className={`flex cursor-pointer items-start gap-3 rounded-2xl p-3 transition ${
-                  rule === r.id ? "bg-cream-50 shadow-soft ring-1 ring-navy-900/10" : "hover:bg-cream-50/60"
+                  rule === r.id ? "bg-cream-50 ring-1 ring-navy-900/10" : "hover:bg-cream-50/60"
                 }`}
               >
                 <input type="radio" name="rule" value={r.id} checked={rule === r.id} onChange={() => setRule(r.id)} className="mt-1 size-4 accent-navy-900" />
@@ -127,11 +127,11 @@ export function SiblingDemo() {
           e.preventDefault();
           drop();
         }}
-        className={`relative rounded-3xl bg-cream-50 p-6 shadow-soft ring-1 transition sm:p-8 ${over ? "ring-4 ring-gold-400" : "ring-navy-900/10"}`}
+        className={`relative rounded-2xl bg-cream-50 p-6 ring-1 transition sm:p-8 ${over ? "ring-4 ring-gold-400" : "ring-navy-900/10"}`}
       >
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-ink-400">Family · FAM-2041</p>
+            <p className="text-sm font-semibold text-ink-400">Family · FAM-2041</p>
             <p className="font-display text-2xl text-navy-900">The Otieno family</p>
           </div>
           <div className="relative inline-flex size-11 items-center justify-center rounded-full bg-navy-50 text-navy-900">
@@ -170,7 +170,7 @@ export function SiblingDemo() {
         </ul>
 
         <div className="mt-4 rounded-2xl bg-cream-100 p-4">
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-ink-400">Split bar</p>
+          <p className="mb-3 text-sm font-semibold text-ink-400">Split bar</p>
           <div className="flex h-4 overflow-hidden rounded-full bg-navy-100">
             {children.map((c, i) => (
               <span key={c.name} className={`${c.tint} transition-[width] duration-700 ease-out`} style={{ width: dropped ? `${(split[i] / PAYMENT) * 100}%` : "0%" }} />

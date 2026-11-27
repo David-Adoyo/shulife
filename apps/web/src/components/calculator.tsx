@@ -36,35 +36,34 @@ export function Calculator() {
   const cost = site.pricePerLearnerTerm != null ? learners * site.pricePerLearnerTerm : null;
 
   return (
-    <div className="grid overflow-hidden rounded-[2rem] bg-cream-50 shadow-soft ring-1 ring-navy-900/10 lg:grid-cols-[1.1fr_1fr]">
+    <div className="grid overflow-hidden rounded-2xl bg-cream-50 ring-1 ring-navy-900/10 lg:grid-cols-[1.1fr_1fr]">
       <div className="space-y-8 p-7 sm:p-10">
         <Slider label="Learners" value={learners} min={100} max={1500} step={10} onChange={setLearners} format={(v) => v.toLocaleString("en-KE")} />
         <Slider label="Average fees per term" value={fee} min={10000} max={200000} step={1000} onChange={setFee} format={(v) => `KSh ${v.toLocaleString("en-KE")}`} />
         <Slider label="Families paying late" value={late} min={5} max={80} step={1} onChange={setLate} format={(v) => `${v}%`} />
-        <p className="text-sm text-ink-600">Adjust the sliders to match your school. Figures are estimates for a 13-week term.</p>
+        <p className="text-sm text-ink-600">Rough estimates. Your own M-Pesa statement will tell you more.</p>
       </div>
       <div className="relative flex flex-col justify-center gap-7 bg-navy-900 p-7 text-cream-50 sm:p-10" aria-live="polite">
-        <div aria-hidden className="absolute -right-24 -top-24 size-72 rounded-full border-[28px] border-gold-400/10" />
         <div>
-          <p className="text-sm uppercase tracking-[0.16em] text-cream-100/70">Fees outstanding at the start of term</p>
+          <p className="text-sm text-cream-100/70">Unpaid at the start of term</p>
           <p className="mt-1 font-display text-5xl text-gold-300">
             <Money amount={outstanding} />
           </p>
         </div>
         <div>
-          <p className="text-sm uppercase tracking-[0.16em] text-cream-100/70">Cash-flow gap, every week</p>
+          <p className="text-sm text-cream-100/70">Spread over a 13-week term, per week</p>
           <p className="mt-1 font-display text-3xl">
             <Money amount={weekly} />
           </p>
         </div>
         <div className="border-t border-cream-50/10 pt-6">
-          <p className="text-sm uppercase tracking-[0.16em] text-cream-100/70">Shulife per term</p>
+          <p className="text-sm text-cream-100/70">Shulife per term</p>
           {cost != null ? (
             <p className="mt-1 font-display text-3xl">
               <Money amount={cost} />
             </p>
           ) : (
-            <p className="mt-1 text-lg text-cream-100/90">Pricing is per learner, per term — and free until your first payment is matched automatically.</p>
+            <p className="mt-1 text-lg text-cream-100/90">Priced per learner per term. Nothing to pay until your first payment has been matched automatically.</p>
           )}
         </div>
       </div>

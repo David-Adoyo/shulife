@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
-import { FullyCollected } from "@/components/blocks";
 import { Icon } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
-import { CtaBand, DashboardMock, FeatureRow, PageHero, SectionHeading } from "@/components/shared";
+import { CtaBand, DashboardMock, FeatureRow, PageHero, Photo, SectionHeading } from "@/components/shared";
 import { Button, Container, Money } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "For directors and owners",
-  description: "See collection by grade in real time, plan cash for the next 30 days, run several campuses from one view and protect your school’s reputation with kinder clearance.",
+  description: "See collection by grade in real time, plan cash for the next 30 days, run several campuses from one view and tell parents about arrears privately before exams and trips.",
 };
 
 const pains = [
@@ -28,10 +27,10 @@ function Projection() {
   const upper = pts.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${(y - 6 - i * 1.6).toFixed(1)}`).join(" ");
   const lower = [...pts].reverse().map(([x, y], i) => `L${x.toFixed(1)} ${(y + 6 + (base.length - 1 - i) * 1.6).toFixed(1)}`).join(" ");
   return (
-    <div className="rounded-[2rem] bg-cream-50 p-6 shadow-soft ring-1 ring-navy-900/5 sm:p-8">
+    <div className="rounded-2xl bg-cream-50 p-6 ring-1 ring-navy-900/5 sm:p-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-gold-700">Cash projected · next 30 days</p>
+          <p className="text-sm font-semibold text-gold-700">Cash projected · next 30 days</p>
           <p className="mt-1 font-display text-4xl text-navy-900">
             <Money amount={2_740_000} />
           </p>
@@ -68,7 +67,7 @@ function ClearanceBoard() {
     { t: "Overridden", cls: "bg-navy-100 text-navy-700", names: ["Fatma H."] },
   ];
   return (
-    <div className="rounded-[2rem] bg-navy-900 p-6 text-cream-50 shadow-lift sm:p-8">
+    <div className="rounded-2xl bg-navy-900 p-6 text-cream-50 shadow-lift sm:p-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-sm text-cream-100/70">Grade 6 East · Science trip</p>
@@ -90,7 +89,7 @@ function ClearanceBoard() {
           </div>
         ))}
       </div>
-      <p className="mt-5 text-xs text-cream-100/50">Fictional learners. Teachers see exactly this — status only.</p>
+      <p className="mt-5 text-xs text-cream-100/50">Fictional learners. This is exactly what teachers see: status only.</p>
     </div>
   );
 }
@@ -102,29 +101,29 @@ export default function ForDirectorsPage() {
         eyebrow="For directors and owners"
         title={
           <>
-            Your whole school, <span className="italic text-gold-600">at a glance.</span>
+            Know what’s been collected without asking for a report.
           </>
         }
-        intro="Know what’s collected today, what’s coming in next month and which classes need attention — without asking anyone for a report."
+        intro="See what came in today, what’s due over the next month, and which classes are behind. It’s all on one page, updated as payments arrive."
         actions={
           <>
             <Button href="/book-demo/" arrow>
-              Book a free demo
+              Book a demo
             </Button>
             <Button href="/pricing/" variant="outline">
               How pricing works
             </Button>
           </>
         }
-        photo={{ name: "director", alt: "A confident school director walking along a sunlit corridor with smiling students", position: "object-[35%_50%]" }}
+        photo={{ name: "director", alt: "A school director walking along a corridor with pupils", position: "object-[35%_50%]" }}
       />
 
       <section className="bg-cream-100 py-24 sm:py-32">
         <Container>
-          <SectionHeading eyebrow="Sound familiar?" title="What keeps directors up at night — solved." />
+          <SectionHeading eyebrow="What directors tell us" title="Problems we hear on almost every demo call" />
           <div className="mt-14 grid gap-4 md:grid-cols-2">
             {pains.map(([p, s], i) => (
-              <Reveal key={p} delay={(i % 2) * 80} className="grid gap-4 rounded-3xl bg-cream-50 p-6 shadow-soft ring-1 ring-navy-900/5 sm:grid-cols-[1fr_auto_1.2fr] sm:items-center sm:p-7">
+              <Reveal key={p} delay={(i % 2) * 80} className="grid gap-4 rounded-2xl bg-cream-50 p-6 ring-1 ring-navy-900/5 sm:grid-cols-[1fr_auto_1.2fr] sm:items-center sm:p-7">
                 <p className="font-display text-xl leading-snug text-navy-900">“{p}”</p>
                 <Icon.Arrow className="size-5 text-gold-500 max-sm:rotate-90" />
                 <p className="text-ink-600">{s}</p>
@@ -138,7 +137,7 @@ export default function ForDirectorsPage() {
         <Container className="space-y-28">
           <FeatureRow
             eyebrow="Live dashboard"
-            title="See the whole school at once."
+            title="One page for the whole term"
             body="The term collection ring, a heatmap of every grade and stream, today’s payments as they arrive and a short list of what needs your attention."
             points={["Collected today and this term", "Share of payments matched automatically", "Review queue, unbanked cash and parent messages in one place"]}
             visual={<DashboardMock />}
@@ -146,14 +145,14 @@ export default function ForDirectorsPage() {
           <FeatureRow
             reverse
             eyebrow="Cash projection"
-            title="Plan for salaries with confidence."
-            body="Shulife projects what will arrive in the next 30, 60 and 90 days from plan instalments, Ratiba mandates and how your own families paid in past terms — with plain-English notes."
+            title="Will there be enough for salaries on the 28th?"
+            body="Shulife projects what will arrive in the next 30, 60 and 90 days from plan instalments, Ratiba standing orders and how your own families paid in past terms, with notes in plain English."
             visual={<Projection />}
           />
           <FeatureRow
             id="clearance"
-            eyebrow="Kinder clearance"
-            title="Kinder than sending children home."
+            eyebrow="Exams and trips"
+            title="Parents hear about arrears before their child does"
             body="A week before exams or trips, families who haven’t cleared get a private, polite message with options to pay or agree a plan. The day before, teachers get a list showing status only."
             points={["Clear if paid above your threshold, or on a plan with no missed instalment", "Overrides by the head or bursar, with a reason", "Nothing ever shown to learners or other parents"]}
             visual={<ClearanceBoard />}
@@ -163,7 +162,7 @@ export default function ForDirectorsPage() {
 
       <section className="bg-navy-950 py-24 text-cream-50 sm:py-32">
         <Container className="grid gap-14 lg:grid-cols-2 lg:gap-20">
-          <SectionHeading tone="dark" eyebrow="Peace of mind" title="Your money, your school, your control." intro="Shulife never holds fees. Every payment goes straight to the school’s own account, and every manual change leaves a trail you can read." />
+          <SectionHeading tone="dark" eyebrow="Control" title="The money stays in your account" intro="Shulife never holds fees. Every payment goes straight to the school’s own account, and every manual change leaves a trail you can read." />
           <div className="grid gap-4 sm:grid-cols-2">
             {[
               ["Multi-campus groups", "One login, every campus, a group dashboard.", Icon.Gate],
@@ -173,7 +172,7 @@ export default function ForDirectorsPage() {
             ].map(([t, d, I]) => {
               const C = I as typeof Icon.Bell;
               return (
-                <Reveal key={t as string} className="rounded-3xl bg-navy-900 p-7 ring-1 ring-cream-50/5">
+                <Reveal key={t as string} className="rounded-2xl bg-navy-900 p-7 ring-1 ring-cream-50/5">
                   <C className="size-7 text-gold-300" />
                   <h3 className="mt-5 text-lg font-bold">{t as string}</h3>
                   <p className="mt-2 text-cream-100/70">{d as string}</p>
@@ -186,12 +185,12 @@ export default function ForDirectorsPage() {
 
       <section className="py-24 sm:py-28">
         <Container className="grid items-center gap-10 lg:grid-cols-2">
+          <div className="overflow-hidden rounded-2xl">
+            <Photo name="football" alt="A school football team with their coach" className="aspect-[4/3] w-full" sizes="(min-width:1024px) 560px, 92vw" />
+          </div>
           <Reveal>
-            <FullyCollected />
-          </Reveal>
-          <Reveal delay={100}>
-            <h2 className="font-display text-4xl leading-tight text-navy-900">Pricing that grows with your school.</h2>
-            <p className="mt-4 text-lg text-ink-600">Per enrolled learner, per term — and free until your first payment is matched automatically.</p>
+            <h2 className="font-display text-4xl leading-tight text-navy-900">Pricing</h2>
+            <p className="mt-4 text-lg text-ink-600">Per enrolled learner, per term. Nothing to pay until your first payment has been matched automatically.</p>
             <div className="mt-8">
               <Button href="/pricing/" variant="navy" arrow>
                 See pricing
